@@ -15,8 +15,7 @@ import * as additionalViz from './scripts/additionalViz.js'
 import * as advancedAnalysis from './scripts/additionalAnalysis.js'
 import csvUrl from './actescriminels_avec_categorie_vol.csv';
 import * as heatMap from './scripts/heatmap.js';
-import 'code/src/limitespdq.geojson';
-import 'code/src/actescriminels_avec_categorie_vol.csv';
+
 
 function styleLegend() {
   // Ajouter des styles CSS pour la légende
