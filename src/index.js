@@ -14,6 +14,8 @@ import * as harmonizedStyle from './scripts/harmonizedStyle.js'
 import * as additionalViz from './scripts/additionalViz.js'
 import * as advancedAnalysis from './scripts/additionalAnalysis.js'
 import csvUrl from './actescriminels_avec_categorie_vol.csv';
+import GeoJSONUrl from './limitespdq.geojson';
+
 import * as heatMap from './scripts/heatmap.js';
 
 
@@ -79,7 +81,7 @@ function styleLegend() {
     var path = helper.getPath(projection)
 
     // Chargement des limites des PDQ
-    d3.json('./limitespdq.geojson').then(function (data) {
+    d3.json(GeoJSONUrl).then(function (data) {
       data = preprocess.reverseGeoJsonCoordinates(data)
       pdqData = data;
 
