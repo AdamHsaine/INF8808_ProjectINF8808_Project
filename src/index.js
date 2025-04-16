@@ -79,7 +79,7 @@ function styleLegend() {
     var path = helper.getPath(projection)
 
     // Chargement des limites des PDQ
-    d3.json('./limitespdq.geojson').then(function (data) {
+    d3.json('code/src/limitespdq copy.geojson').then(function (data) {
       data = preprocess.reverseGeoJsonCoordinates(data)
       pdqData = data;
 
@@ -239,5 +239,3 @@ function setupTitleStructure() {
     }
   }
 }
-
-console.log("hello")
