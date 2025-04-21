@@ -77,7 +77,7 @@ export function createCrimeHeatmap(crimeData, container) {
 
     // Extraire les catégories uniques de crimes
     const crimeTypes = [...new Set(crimeData.map(d => d.CATEGORIE).filter(c => c))];
-
+    console.log("text");
     // Remplir le sélecteur d'années
     const yearSelect = document.getElementById('year-filter-heatmap');
 
