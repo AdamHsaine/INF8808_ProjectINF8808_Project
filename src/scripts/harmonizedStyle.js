@@ -185,7 +185,7 @@ export function applyHarmonizedMainMapStyle() {
   if (!description) {
     description = document.createElement('div');
     description.className = 'visualization-description main-map-description';
-    description.textContent = 'Cliquez sur un PDQ pour voir les statistiques détaillées.';
+    // description.textContent = 'Cliquez sur un PDQ pour voir les statistiques détaillées.';
     mainMapContainer.insertBefore(description, mainMapContainer.children[1]);
   } else {
     description.className = 'visualization-description main-map-description';
