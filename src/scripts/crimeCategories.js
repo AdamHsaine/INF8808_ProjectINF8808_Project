@@ -268,7 +268,7 @@ function processDataForCategoriesChart(filteredData, displayMode) {
   // 1. Extraire les années et catégories uniques
   const years = [...new Set(filteredData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-    .filter(y => y !== null))].sort();
+    .filter(y => y !== null && y >= 2015))].sort();
 
   const categories = [...new Set(filteredData
     .map(d => d.CATEGORIE)
@@ -310,7 +310,7 @@ function processDataForCategoriesChart(filteredData, displayMode) {
 
       if (displayMode === 'absolute') {
         // Valeurs absolues
-        return { year, value: count };
+        return { year, value: count }
       }
       else if (displayMode === 'percentage') {
         // Pourcentages
