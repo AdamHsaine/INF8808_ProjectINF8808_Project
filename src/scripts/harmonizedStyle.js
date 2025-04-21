@@ -175,7 +175,7 @@ export function applyHarmonizedMainMapStyle() {
   if (!titleHeader) {
     titleHeader = document.createElement('h2');
     titleHeader.className = 'visualization-title main-map-title';
-    titleHeader.textContent = 'Carte des Crimes par PDQ à Montréal';
+    // titleHeader.textContent = 'Carte des Crimes par PDQ à Montréal';
     mainMapContainer.insertBefore(titleHeader, mainMapContainer.firstChild);
   } else {
     titleHeader.className = 'visualization-title main-map-title';
