@@ -68,30 +68,7 @@ export function initializeVisualizationTabs() {
   heatmapContainer.classList.add('tab-content', 'heatmap-tab');
   heatmapContainer.dataset.viz = 'heatmap';
   heatmapContainer.style.display = 'none';
-  // 4. Créer un groupe d'onglets supplémentaires
-  const newTabsContainer = document.createElement('div');
-  newTabsContainer.className = 'visualization-tabs2';
-  newTabsContainer.innerHTML = `
-     <div class="tabs-header">
-       <button class="tab-button" data-viz="second-heatmap">Distribution des types de crimes en fonction des années</button>
-   </div>`;
 
-  // Ajouter les onglets au conteneur principal
-  vizContainer.insertBefore(tabsContainer, vizContainer.firstChild);
-  vizContainer.appendChild(newTabsContainer)
-
-  const secondHeatmapContainer = document.getElementById('second-heatmap-container');
-  secondHeatmapContainer.classList.add('tab-content', 'second-heatmap-tab');
-  secondHeatmapContainer.dataset.viz = 'second-heatmap';
-  secondHeatmapContainer.style.display = 'none';  // Cacher par défaut
-
-  // const correlationsContainer = document.getElementById('correlations-container');
-  // correlationsContainer.classList.add('tab-content', 'correlations-tab');
-  // correlationsContainer.dataset.viz = 'correlations';
-  // correlationsContainer.style.display = 'none';  // Cacher par défaut
-
-
-  vizContainer.appendChild(secondHeatmapContainer);
   // Réorganisation des éléments dans le DOM
   vizContainer.insertBefore(tabsContainer, vizContainer.firstChild);
 
@@ -244,5 +221,3 @@ function addTabStyles() {
 
   document.head.appendChild(style);
 }
-
-

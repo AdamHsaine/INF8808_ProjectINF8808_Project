@@ -14,17 +14,16 @@ import * as harmonizedStyle from './scripts/harmonizedStyle.js'
 import * as additionalViz from './scripts/additionalViz.js'
 import * as advancedAnalysis from './scripts/additionalAnalysis.js'
 import csvUrl from './actescriminels_avec_categorie_vol.csv';
-import GeoJSONUrl from './limitespdq.geojson';
 
-import * as heatMap from './scripts/heatmap.js';
-
-
+/**
+ * Adapte la taille et la position de la légende
+ */
 function styleLegend() {
   // Ajouter des styles CSS pour la légende
   const style = document.createElement('style')
   style.textContent = `
     .main-svg .legend {
-      transform: translate(50px, 200px);
+      transform: translate(50px, 70px);
     }
   `
   document.head.appendChild(style)
@@ -67,10 +66,7 @@ function styleLegend() {
   const heatmapContainer = document.createElement('div');
   heatmapContainer.id = 'heatmap-container';
   document.querySelector('.viz-container').appendChild(heatmapContainer);
-  // Créer un conteneur pour second-heatmap-container
-  const secondHeatmapContainer = document.createElement('div');
-  secondHeatmapContainer.id = 'second-heatmap-container';
-  document.querySelector('.viz-container').appendChild(secondHeatmapContainer);
+
   build()
 
   /**
@@ -81,7 +77,7 @@ function styleLegend() {
     var path = helper.getPath(projection)
 
     // Chargement des limites des PDQ
-    d3.json(GeoJSONUrl).then(function (data) {
+    d3.json('./limitespdq.geojson').then(function (data) {
       data = preprocess.reverseGeoJsonCoordinates(data)
       pdqData = data;
 
@@ -124,8 +120,7 @@ function styleLegend() {
           crimes,
           document.getElementById('heatmap-container')
         );
-        // Appeler la fonction createHeatmap pour le second heatmap
-        heatMap.createHeatmap(csvUrl, 'second-heatmap-container');  // Ajout du conteneur second-heatmap-container
+
         console.log("Visualisation initialisée avec succès.");
 
         // Appliquer le style harmonisé à la carte principale
@@ -196,7 +191,7 @@ function setupTitleStructure() {
   const mainTitle = document.createElement('div');
   mainTitle.className = 'main-title';
   mainTitle.style.textAlign = 'center';
-  mainTitle.style.fontSize = '20px';
+  mainTitle.style.fontSize = '24px';
   mainTitle.style.fontWeight = 'bold';
   mainTitle.style.margin = '10px 0 20px 0';
   mainTitle.textContent = 'Carte des Crimes par PDQ à Montréal';
@@ -205,21 +200,21 @@ function setupTitleStructure() {
   const filtersBar = document.getElementById('filters-bar');
 
   // Créer le sous-titre et sous-sous-titre (après les filtres)
-  const subTitle = document.createElement('div');
-  subTitle.className = 'sub-title';
-  subTitle.style.textAlign = 'center';
-  subTitle.style.fontSize = '18px';
-  subTitle.style.fontWeight = 'bold';
-  subTitle.style.margin = '20px 0 5px 0';
-  subTitle.textContent = 'Crimes par PDQ';
+  // const subTitle = document.createElement('div');
+  // subTitle.className = 'sub-title';
+  // subTitle.style.textAlign = 'center';
+  // subTitle.style.fontSize = '18px';
+  // subTitle.style.fontWeight = 'bold';
+  // subTitle.style.margin = '20px 0 5px 0';
+  // subTitle.textContent = 'Crimes par PDQ';
 
-  const subSubtitle = document.createElement('div');
-  subSubtitle.className = 'sub-subtitle';
-  subSubtitle.style.textAlign = 'center';
-  subSubtitle.style.fontSize = '14px';
-  subSubtitle.style.color = '#666';
-  subSubtitle.style.margin = '0 0 20px 0';
-  subSubtitle.textContent = 'Cliquez sur un PDQ pour voir les statistiques détaillées.';
+  // const subSubtitle = document.createElement('div');
+  // subSubtitle.className = 'sub-subtitle';
+  // subSubtitle.style.textAlign = 'center';
+  // subSubtitle.style.fontSize = '14px';
+  // subSubtitle.style.color = '#666';
+  // subSubtitle.style.margin = '0 0 20px 0';
+  // subSubtitle.textContent = 'Cliquez sur un PDQ pour voir les statistiques détaillées.';
 
   // Ajouter le titre principal au début du conteneur
   if (graphElement.firstChild) {

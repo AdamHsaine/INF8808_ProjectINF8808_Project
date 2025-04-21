@@ -51,18 +51,20 @@ function addHorizontalFilterStyles() {
             margin: 20px 0;
             padding: 15px;
             flex-wrap: wrap;
+            
         }
         
         .filter-group {
             display: flex;
             align-items: center;
             white-space: nowrap;
+            font-weight: bold;
         }
         
         .filter-group label {
             margin-right: 8px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 1px;
         }
         
         .filter-group select {
@@ -70,8 +72,9 @@ function addHorizontalFilterStyles() {
             border: 1px solid #ccc;
             border-radius: 4px;
             background-color: #fff;
-            font-size: 14px;
+            font-size: 16px;
             min-width: 150px;
+            font-weight: bold;
         }
         
         .filter-button {
