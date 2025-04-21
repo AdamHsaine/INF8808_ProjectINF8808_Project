@@ -14,16 +14,17 @@ import * as harmonizedStyle from './scripts/harmonizedStyle.js'
 import * as additionalViz from './scripts/additionalViz.js'
 import * as advancedAnalysis from './scripts/additionalAnalysis.js'
 import csvUrl from './actescriminels_avec_categorie_vol.csv';
+import GeoJSONUrl from './limitespdq.geojson';
 
-/**
- * Adapte la taille et la position de la légende
- */
+
+
+
 function styleLegend() {
   // Ajouter des styles CSS pour la légende
   const style = document.createElement('style')
   style.textContent = `
     .main-svg .legend {
-      transform: translate(50px, 70px);
+      transform: translate(50px, 200px);
     }
   `
   document.head.appendChild(style)
@@ -66,7 +67,10 @@ function styleLegend() {
   const heatmapContainer = document.createElement('div');
   heatmapContainer.id = 'heatmap-container';
   document.querySelector('.viz-container').appendChild(heatmapContainer);
-
+  // Créer un conteneur pour second-heatmap-container
+  const secondHeatmapContainer = document.createElement('div');
+  secondHeatmapContainer.id = 'second-heatmap-container';
+  document.querySelector('.viz-container').appendChild(secondHeatmapContainer);
   build()
 
   /**
@@ -77,7 +81,7 @@ function styleLegend() {
     var path = helper.getPath(projection)
 
     // Chargement des limites des PDQ
-    d3.json('./limitespdq.geojson').then(function (data) {
+    d3.json(GeoJSONUrl).then(function (data) {
       data = preprocess.reverseGeoJsonCoordinates(data)
       pdqData = data;
 
@@ -85,7 +89,6 @@ function styleLegend() {
       d3.csv(csvUrl, d3.autoType).then(function (crimes) {
         crimeData = crimes;
         console.log("Crime Data:", crimes)
-
         // Prétraitement des données criminelles
         const processedData = crimeAnalysis.processCrimeData(crimes);
 
@@ -148,8 +151,8 @@ function styleLegend() {
   }
 
   /**
-   * Fonction pour mettre à jour la visualisation principale quand les filtres changent
-   */
+  * Fonction pour mettre à jour la visualisation principale quand les filtres changent
+  */
   function updateMainVisualization() {
     if (!pdqData || !crimeData) return; // Ne pas mettre à jour si les données ne sont pas chargées
 
