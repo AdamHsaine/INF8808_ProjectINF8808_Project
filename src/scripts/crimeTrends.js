@@ -278,20 +278,21 @@ function processDataForTrends(filteredData) {
 
     filteredData.forEach(crime => {
         if (crime.DATE && crime.QUART) {
-            const year = new Date(crime.DATE).getFullYear();
-            const quart = crime.QUART;
+          const year = new Date(crime.DATE).getFullYear();
+          if (year < 2015 || year > 2025) return;
+          const quart = crime.QUART;
 
-            if (!dataByYearAndQuarter[year]) {
-                dataByYearAndQuarter[year] = {
-                    jour: 0,
-                    soir: 0,
-                    nuit: 0
-                };
-            }
+          if (!dataByYearAndQuarter[year]) {
+              dataByYearAndQuarter[year] = {
+                  jour: 0,
+                  soir: 0,
+                  nuit: 0
+              };
+          }
 
-            if (quarters.includes(quart)) {
-                dataByYearAndQuarter[year][quart]++;
-            }
+          if (quarters.includes(quart)) {
+              dataByYearAndQuarter[year][quart]++;
+          }
         }
     });
 
