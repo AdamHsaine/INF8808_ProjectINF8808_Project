@@ -279,8 +279,13 @@ function processDataForTrends (filteredData) {
   filteredData.forEach(crime => {
     if (crime.DATE && crime.QUART) {
       const year = new Date(crime.DATE).getFullYear()
+
+      // Filtrer les années avant 2015 et après 2025
+      if (year < 2015 || year > 2025) return
+
       const quart = crime.QUART
 
+      // Initialiser l'objet de données pour l'année si ce n'est pas déjà fait
       if (!dataByYearAndQuarter[year]) {
         dataByYearAndQuarter[year] = {
           jour: 0,
@@ -289,6 +294,7 @@ function processDataForTrends (filteredData) {
         }
       }
 
+      // Incrémenter le compteur pour le quart sélectionné
       if (quarters.includes(quart)) {
         dataByYearAndQuarter[year][quart]++
       }
