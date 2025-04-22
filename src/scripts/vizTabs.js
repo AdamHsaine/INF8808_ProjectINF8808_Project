@@ -6,129 +6,129 @@
 /**
  * Initialise le système d'onglets pour les visualisations
  */
-export function initializeVisualizationTabs() {
-  console.log("Initialisation du système d'onglets...");
+export function initializeVisualizationTabs () {
+  console.log("Initialisation du système d'onglets...")
 
   // Créer le conteneur principal pour toutes les visualisations
-  const vizContainer = document.querySelector('.viz-container');
+  const vizContainer = document.querySelector('.viz-container')
 
   // Récupérer le conteneur de filtres existant
-  const filterContainer = document.getElementById('filter-container');
+  const filterContainer = document.getElementById('filter-container')
 
   // Créer le conteneur des onglets
-  const tabsContainer = document.createElement('div');
-  tabsContainer.className = 'visualization-tabs';
+  const tabsContainer = document.createElement('div')
+  tabsContainer.className = 'visualization-tabs'
   tabsContainer.innerHTML = `
     <div class="tabs-header">
       <button class="tab-button active" data-viz="main-map">Carte des PDQ</button>
       <button class="tab-button" data-viz="evolution-map">Évolution Temporelle</button>
       <button class="tab-button" data-viz="heatmap">Carte de Chaleur</button>
     </div>
-  `;
+  `
 
   // 1. Conteneur pour la carte principale (déjà existant)
-  const mainMapContainer = document.querySelector('.graph').parentElement;
+  const mainMapContainer = document.querySelector('.graph').parentElement
 
   // Si un conteneur de filtres existe, le déplacer à l'intérieur du conteneur .graph
   if (filterContainer) {
     // Le retirer de sa position actuelle
     if (filterContainer.parentElement) {
-      filterContainer.parentElement.removeChild(filterContainer);
+      filterContainer.parentElement.removeChild(filterContainer)
     }
 
     // Récupérer l'élément .graph
-    const graphElement = document.querySelector('.graph');
+    const graphElement = document.querySelector('.graph')
 
     // L'insérer au début de l'élément .graph
     if (graphElement) {
-      graphElement.insertBefore(filterContainer, graphElement.firstChild);
+      graphElement.insertBefore(filterContainer, graphElement.firstChild)
 
       // Ajuster le style du conteneur de filtres pour qu'il s'intègre bien dans .graph
-      filterContainer.style.position = 'absolute';
-      filterContainer.style.zIndex = '1000';
-      filterContainer.style.top = '10px';
-      filterContainer.style.left = '10px';
-      filterContainer.style.width = 'calc(100% - 20px)';
-      filterContainer.style.maxWidth = '300px';
-      filterContainer.style.background = 'rgba(255, 255, 255, 0.9)';
+      filterContainer.style.position = 'absolute'
+      filterContainer.style.zIndex = '1000'
+      filterContainer.style.top = '10px'
+      filterContainer.style.left = '10px'
+      filterContainer.style.width = 'calc(100% - 20px)'
+      filterContainer.style.maxWidth = '300px'
+      filterContainer.style.background = 'rgba(255, 255, 255, 0.9)'
     }
   }
 
-  mainMapContainer.classList.add('tab-content', 'main-map-tab');
-  mainMapContainer.dataset.viz = 'main-map';
+  mainMapContainer.classList.add('tab-content', 'main-map-tab')
+  mainMapContainer.dataset.viz = 'main-map'
 
   // 2. Conteneur pour la carte d'évolution
-  const evolutionMapContainer = document.getElementById('evolution-viz-container');
-  evolutionMapContainer.classList.add('tab-content', 'evolution-map-tab');
-  evolutionMapContainer.dataset.viz = 'evolution-map';
-  evolutionMapContainer.style.display = 'none';
+  const evolutionMapContainer = document.getElementById('evolution-viz-container')
+  evolutionMapContainer.classList.add('tab-content', 'evolution-map-tab')
+  evolutionMapContainer.dataset.viz = 'evolution-map'
+  evolutionMapContainer.style.display = 'none'
 
   // 3. Conteneur pour la carte de chaleur
-  const heatmapContainer = document.getElementById('heatmap-container');
-  heatmapContainer.classList.add('tab-content', 'heatmap-tab');
-  heatmapContainer.dataset.viz = 'heatmap';
-  heatmapContainer.style.display = 'none';
+  const heatmapContainer = document.getElementById('heatmap-container')
+  heatmapContainer.classList.add('tab-content', 'heatmap-tab')
+  heatmapContainer.dataset.viz = 'heatmap'
+  heatmapContainer.style.display = 'none'
 
   // Réorganisation des éléments dans le DOM
-  vizContainer.insertBefore(tabsContainer, vizContainer.firstChild);
+  vizContainer.insertBefore(tabsContainer, vizContainer.firstChild)
 
   // Ajouter les gestionnaires d'événements pour les onglets
-  addTabEventListeners();
+  addTabEventListeners()
 
   // Ajouter les styles CSS pour les onglets
-  addTabStyles();
+  addTabStyles()
 
-  console.log("Système d'onglets initialisé avec succès!");
+  console.log("Système d'onglets initialisé avec succès!")
 }
 
 /**
  * Ajoute les gestionnaires d'événements pour les onglets
  */
-function addTabEventListeners() {
+function addTabEventListeners () {
   // Sélectionner tous les boutons d'onglets
-  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabButtons = document.querySelectorAll('.tab-button')
 
   // Ajouter un gestionnaire d'événement pour chaque bouton
   tabButtons.forEach(button => {
     button.addEventListener('click', () => {
       // Récupérer l'ID de la visualisation à afficher
-      const vizId = button.dataset.viz;
+      const vizId = button.dataset.viz
 
       // Masquer toutes les visualisations
       document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.style.display = 'none';
-      });
+        tab.style.display = 'none'
+      })
 
       // Afficher la visualisation sélectionnée
-      document.querySelector(`.tab-content[data-viz="${vizId}"]`).style.display = 'block';
+      document.querySelector(`.tab-content[data-viz="${vizId}"]`).style.display = 'block'
 
       // Mettre à jour la classe active des boutons
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+      tabButtons.forEach(btn => btn.classList.remove('active'))
+      button.classList.add('active')
 
       // Déclencher un événement de redimensionnement pour assurer que la carte se redessine correctement
-      window.dispatchEvent(new Event('resize'));
+      window.dispatchEvent(new Event('resize'))
 
       // Si l'onglet actif est la carte de chaleur, redimensionner la carte Leaflet
       if (vizId === 'heatmap' && window.crimeHeatmap && window.crimeHeatmap.map) {
         // Attendre un court délai pour s'assurer que la carte est visible
         setTimeout(() => {
-          window.crimeHeatmap.map.invalidateSize();
-        }, 100);
+          window.crimeHeatmap.map.invalidateSize()
+        }, 100)
       }
-    });
-  });
+    })
+  })
 }
 
 /**
  * Ajoute les styles CSS pour les onglets
  */
-function addTabStyles() {
+function addTabStyles () {
   // Vérifier si les styles existent déjà
-  if (document.getElementById('viz-tabs-styles')) return;
+  if (document.getElementById('viz-tabs-styles')) return
 
-  const style = document.createElement('style');
-  style.id = 'viz-tabs-styles';
+  const style = document.createElement('style')
+  style.id = 'viz-tabs-styles'
   style.textContent = `
     .visualization-tabs {
       width: 100%;
@@ -217,7 +217,7 @@ function addTabStyles() {
       font-size: 13px;
       padding: 5px 10px;
     }
-  `;
+  `
 
-  document.head.appendChild(style);
+  document.head.appendChild(style)
 }

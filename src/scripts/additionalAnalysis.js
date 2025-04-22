@@ -5,58 +5,58 @@
 
 // import { createCrimeEvolutionAnalysis } from './crimeEvolution.js';
 // import { createCrimeImpactAnalysis } from './crimeImpact.js';
-import { createCrimeCorrelationAnalysis } from './crimeCorrelation.js';
-import { createSeasonalImpactAnalysis } from './seasonalImpact.js';
+import { createCrimeCorrelationAnalysis } from './crimeCorrelation.js'
+import { createSeasonalImpactAnalysis } from './seasonalImpact.js'
 
 /**
  * Initialise le système d'onglets d'analyse avancée et les visualisations correspondantes
- * 
+ *
  * @param {Array} crimeData Les données des crimes
  */
-export function initializeAdvancedAnalysis(crimeData) {
-    console.log("Initialisation du système d'analyse avancée...");
+export function initializeAdvancedAnalysis (crimeData) {
+  console.log("Initialisation du système d'analyse avancée...")
 
-    // Créer un séparateur visuel
-    createAdvancedSeparator();
+  // Créer un séparateur visuel
+  createAdvancedSeparator()
 
-    // Créer la section des analyses avancées
-    createAdvancedSection();
+  // Créer la section des analyses avancées
+  createAdvancedSection()
 
-    // Initialiser chaque visualisation d'analyse
-    // createCrimeEvolutionAnalysis(crimeData, document.getElementById('crime-evolution-container'));
-    // createCrimeImpactAnalysis(crimeData, document.getElementById('crime-impact-container'));
-    createCrimeCorrelationAnalysis(crimeData, document.getElementById('crime-correlation-container'));
-    createSeasonalImpactAnalysis(crimeData, document.getElementById('seasonal-impact-container'));
+  // Initialiser chaque visualisation d'analyse
+  // createCrimeEvolutionAnalysis(crimeData, document.getElementById('crime-evolution-container'));
+  // createCrimeImpactAnalysis(crimeData, document.getElementById('crime-impact-container'));
+  createCrimeCorrelationAnalysis(crimeData, document.getElementById('crime-correlation-container'))
+  createSeasonalImpactAnalysis(crimeData, document.getElementById('seasonal-impact-container'))
 
-    console.log("Analyses avancées initialisées avec succès.");
+  console.log('Analyses avancées initialisées avec succès.')
 }
 
 /**
  * Crée un séparateur visuel pour le troisième système d'onglets
  */
-function createAdvancedSeparator() {
-    const vizContainer = document.querySelector('.viz-container');
+function createAdvancedSeparator () {
+  const vizContainer = document.querySelector('.viz-container')
 
-    const separator = document.createElement('div');
-    separator.className = 'advanced-analysis-separator';
-    separator.innerHTML = `
+  const separator = document.createElement('div')
+  separator.className = 'advanced-analysis-separator'
+  separator.innerHTML = `
     <hr style="margin: 50px 0 20px 0; border: none; height: 2px; background-color: #FB8C00;">
     <h2 style="text-align: center; margin: 20px 0; color: #333; font-size: 24px;">Analyses Avancées</h2>
-  `;
+  `
 
-    vizContainer.appendChild(separator);
+  vizContainer.appendChild(separator)
 
-    // Ajouter les styles pour le séparateur
-    addAdvancedSeparatorStyles();
+  // Ajouter les styles pour le séparateur
+  addAdvancedSeparatorStyles()
 }
 
 /**
  * Ajoute les styles pour le séparateur des analyses avancées
  */
-function addAdvancedSeparatorStyles() {
-    const style = document.createElement('style');
-    style.id = 'advanced-separator-styles';
-    style.textContent = `
+function addAdvancedSeparatorStyles () {
+  const style = document.createElement('style')
+  style.id = 'advanced-separator-styles'
+  style.textContent = `
     .advanced-analysis-separator {
       width: 100%;
       position: relative;
@@ -86,23 +86,23 @@ function addAdvancedSeparatorStyles() {
     .advanced-analysis-separator h2:after {
       right: -60px;
     }
-  `;
+  `
 
-    document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
  * Crée la section des analyses avancées avec son propre système d'onglets
  */
-function createAdvancedSection() {
-    const vizContainer = document.querySelector('.viz-container');
+function createAdvancedSection () {
+  const vizContainer = document.querySelector('.viz-container')
 
-    // Créer le conteneur principal pour les analyses avancées
-    const advancedSection = document.createElement('div');
-    advancedSection.className = 'advanced-analysis-section';
+  // Créer le conteneur principal pour les analyses avancées
+  const advancedSection = document.createElement('div')
+  advancedSection.className = 'advanced-analysis-section'
 
-    // Créer le système d'onglets pour les analyses avancées
-    advancedSection.innerHTML = `
+  // Créer le système d'onglets pour les analyses avancées
+  advancedSection.innerHTML = `
     <div class="advanced-tabs">
       <div class="advanced-tabs-header">
         <button class="advanced-tab-button" data-tab="crime-correlation">
@@ -119,27 +119,27 @@ function createAdvancedSection() {
       <div id="crime-correlation-container" class="advanced-tab-content" data-tab="crime-correlation"></div>
       <div id="seasonal-impact-container" class="advanced-tab-content" data-tab="seasonal-impact" style="display: none;"></div>
     </div>
-  `;
+  `
 
-    vizContainer.appendChild(advancedSection);
+  vizContainer.appendChild(advancedSection)
 
-    // Ajouter les styles pour le nouveau système d'onglets
-    addAdvancedTabsStyles();
+  // Ajouter les styles pour le nouveau système d'onglets
+  addAdvancedTabsStyles()
 
-    // Ajouter les gestionnaires d'événements pour les onglets
-    setupAdvancedTabsEventHandlers();
+  // Ajouter les gestionnaires d'événements pour les onglets
+  setupAdvancedTabsEventHandlers()
 }
 
 /**
  * Ajoute les styles pour le système d'onglets d'analyses avancées
  */
-function addAdvancedTabsStyles() {
-    // Vérifier si les styles existent déjà
-    if (document.getElementById('advanced-tabs-styles')) return;
+function addAdvancedTabsStyles () {
+  // Vérifier si les styles existent déjà
+  if (document.getElementById('advanced-tabs-styles')) return
 
-    const style = document.createElement('style');
-    style.id = 'advanced-tabs-styles';
-    style.textContent = `
+  const style = document.createElement('style')
+  style.id = 'advanced-tabs-styles'
+  style.textContent = `
     .advanced-analysis-section {
       margin-top: 20px;
       margin-bottom: 40px;
@@ -257,62 +257,62 @@ function addAdvancedTabsStyles() {
         border-radius: 5px 5px 0 0;
       }
     }
-  `;
+  `
 
-    document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
  * Configure les gestionnaires d'événements pour les onglets d'analyses avancées
  */
-function setupAdvancedTabsEventHandlers() {
-    const advancedTabButtons = document.querySelectorAll('.advanced-tab-button');
+function setupAdvancedTabsEventHandlers () {
+  const advancedTabButtons = document.querySelectorAll('.advanced-tab-button')
 
-    // Ajouter un gestionnaire d'événement pour chaque bouton
-    advancedTabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Récupérer l'ID de l'onglet à afficher
-            const tabId = button.dataset.tab;
+  // Ajouter un gestionnaire d'événement pour chaque bouton
+  advancedTabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Récupérer l'ID de l'onglet à afficher
+      const tabId = button.dataset.tab
 
-            // Masquer tous les contenus d'onglets
-            document.querySelectorAll('.advanced-tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
+      // Masquer tous les contenus d'onglets
+      document.querySelectorAll('.advanced-tab-content').forEach(content => {
+        content.style.display = 'none'
+      })
 
-            // Afficher le contenu de l'onglet sélectionné
-            document.querySelector(`.advanced-tab-content[data-tab="${tabId}"]`).style.display = 'block';
+      // Afficher le contenu de l'onglet sélectionné
+      document.querySelector(`.advanced-tab-content[data-tab="${tabId}"]`).style.display = 'block'
 
-            // Mettre à jour la classe active des boutons
-            advancedTabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+      // Mettre à jour la classe active des boutons
+      advancedTabButtons.forEach(btn => btn.classList.remove('active'))
+      button.classList.add('active')
 
-            // Déclencher un redimensionnement si nécessaire
-            window.dispatchEvent(new Event('resize'));
-        });
-    });
+      // Déclencher un redimensionnement si nécessaire
+      window.dispatchEvent(new Event('resize'))
+    })
+  })
 
-    // Activer automatiquement l'onglet Corrélations temporelles au chargement
-    setTimeout(() => {
-        // Trouver le bouton pour les corrélations temporelles
-        const correlationButton = document.querySelector('.advanced-tab-button[data-tab="crime-correlation"]');
-        if (correlationButton) {
-            // Activer le bouton
-            correlationButton.classList.add('active');
+  // Activer automatiquement l'onglet Corrélations temporelles au chargement
+  setTimeout(() => {
+    // Trouver le bouton pour les corrélations temporelles
+    const correlationButton = document.querySelector('.advanced-tab-button[data-tab="crime-correlation"]')
+    if (correlationButton) {
+      // Activer le bouton
+      correlationButton.classList.add('active')
 
-            // Afficher le contenu correspondant
-            const correlationContent = document.querySelector('.advanced-tab-content[data-tab="crime-correlation"]');
-            if (correlationContent) {
-                // Masquer d'abord tous les contenus
-                document.querySelectorAll('.advanced-tab-content').forEach(content => {
-                    content.style.display = 'none';
-                });
+      // Afficher le contenu correspondant
+      const correlationContent = document.querySelector('.advanced-tab-content[data-tab="crime-correlation"]')
+      if (correlationContent) {
+        // Masquer d'abord tous les contenus
+        document.querySelectorAll('.advanced-tab-content').forEach(content => {
+          content.style.display = 'none'
+        })
 
-                // Puis afficher seulement le contenu des corrélations
-                correlationContent.style.display = 'block';
+        // Puis afficher seulement le contenu des corrélations
+        correlationContent.style.display = 'block'
 
-                // Déclencher un redimensionnement pour assurer que les graphiques s'affichent correctement
-                window.dispatchEvent(new Event('resize'));
-            }
-        }
-    }, 100); // Petit délai pour s'assurer que le DOM est prêt
+        // Déclencher un redimensionnement pour assurer que les graphiques s'affichent correctement
+        window.dispatchEvent(new Event('resize'))
+      }
+    }
+  }, 100) // Petit délai pour s'assurer que le DOM est prêt
 }

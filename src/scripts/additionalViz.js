@@ -3,57 +3,57 @@
  * Ce module permet d'ajouter un second système d'onglets pour les visualisations supplémentaires
  */
 
-import { createCrimeCategoriesChart } from './crimeCategories.js';
-import { createCrimeTrendsChart } from './crimeTrends.js';
-import { createMonthlyHeatmap } from './monthlyHeatmap.js';
+import { createCrimeCategoriesChart } from './crimeCategories.js'
+import { createCrimeTrendsChart } from './crimeTrends.js'
+import { createMonthlyHeatmap } from './monthlyHeatmap.js'
 
 /**
  * Initialise toutes les visualisations additionnelles dans un système d'onglets séparé
- * 
+ *
  * @param {Array} crimeData Les données des crimes
  */
-export function initializeAdditionalVisualizations(crimeData) {
-  console.log("Initialisation des visualisations additionnelles avec système d'onglets séparé...");
+export function initializeAdditionalVisualizations (crimeData) {
+  console.log("Initialisation des visualisations additionnelles avec système d'onglets séparé...")
 
   // Créer un séparateur visuel
-  createSeparator();
+  createSeparator()
 
   // Créer la section des visualisations additionnelles
-  createAdditionalSection();
+  createAdditionalSection()
 
   // Initialiser chaque visualisation
-  createCrimeCategoriesChart(crimeData, document.getElementById('categories-chart-container'));
-  createCrimeTrendsChart(crimeData, document.getElementById('trends-chart-container'));
-  createMonthlyHeatmap(crimeData, document.getElementById('monthly-heatmap-container'));
+  createCrimeCategoriesChart(crimeData, document.getElementById('categories-chart-container'))
+  createCrimeTrendsChart(crimeData, document.getElementById('trends-chart-container'))
+  createMonthlyHeatmap(crimeData, document.getElementById('monthly-heatmap-container'))
 
-  console.log("Visualisations additionnelles initialisées avec succès.");
+  console.log('Visualisations additionnelles initialisées avec succès.')
 }
 
 /**
  * Crée un séparateur visuel entre les deux systèmes d'onglets
  */
-function createSeparator() {
-  const vizContainer = document.querySelector('.viz-container');
+function createSeparator () {
+  const vizContainer = document.querySelector('.viz-container')
 
-  const separator = document.createElement('div');
-  separator.className = 'visualizations-separator';
+  const separator = document.createElement('div')
+  separator.className = 'visualizations-separator'
   separator.innerHTML = `
     <hr style="margin: 40px 0 20px 0; border: none; height: 2px; background-color: #4285F4;">
     <h2 style="text-align: center; margin: 20px 0; color: #333; font-size: 24px;">Analyses temporelles</h2>
-  `;
+  `
 
-  vizContainer.appendChild(separator);
+  vizContainer.appendChild(separator)
 
   // Ajouter les styles pour le séparateur
-  addSeparatorStyles();
+  addSeparatorStyles()
 }
 
 /**
  * Ajoute les styles pour le séparateur
  */
-function addSeparatorStyles() {
-  const style = document.createElement('style');
-  style.id = 'separator-styles';
+function addSeparatorStyles () {
+  const style = document.createElement('style')
+  style.id = 'separator-styles'
   style.textContent = `
     .visualizations-separator {
       width: 100%;
@@ -84,20 +84,20 @@ function addSeparatorStyles() {
     .visualizations-separator h2:after {
       right: -60px;
     }
-  `;
+  `
 
-  document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
  * Crée la section des visualisations additionnelles avec son propre système d'onglets
  */
-function createAdditionalSection() {
-  const vizContainer = document.querySelector('.viz-container');
+function createAdditionalSection () {
+  const vizContainer = document.querySelector('.viz-container')
 
   // Créer le conteneur principal pour les visualisations supplémentaires
-  const additionalSection = document.createElement('div');
-  additionalSection.className = 'additional-visualizations';
+  const additionalSection = document.createElement('div')
+  additionalSection.className = 'additional-visualizations'
 
   // Créer le système d'onglets supplémentaire
   additionalSection.innerHTML = `
@@ -113,26 +113,26 @@ function createAdditionalSection() {
       <div id="trends-chart-container" class="additional-tab-content" data-tab="trends" style="display: none;"></div>
       <div id="monthly-heatmap-container" class="additional-tab-content" data-tab="monthly-heatmap" style="display: none;"></div>
     </div>
-  `;
+  `
 
-  vizContainer.appendChild(additionalSection);
+  vizContainer.appendChild(additionalSection)
 
   // Ajouter les styles pour le nouveau système d'onglets
-  addAdditionalTabsStyles();
+  addAdditionalTabsStyles()
 
   // Ajouter les gestionnaires d'événements pour les onglets supplémentaires
-  setupAdditionalTabsEventHandlers();
+  setupAdditionalTabsEventHandlers()
 }
 
 /**
  * Ajoute les styles pour le système d'onglets supplémentaire
  */
-function addAdditionalTabsStyles() {
+function addAdditionalTabsStyles () {
   // Vérifier si les styles existent déjà
-  if (document.getElementById('additional-tabs-styles')) return;
+  if (document.getElementById('additional-tabs-styles')) return
 
-  const style = document.createElement('style');
-  style.id = 'additional-tabs-styles';
+  const style = document.createElement('style')
+  style.id = 'additional-tabs-styles'
   style.textContent = `
     .additional-visualizations {
       margin-top: 20px;
@@ -193,38 +193,38 @@ function addAdditionalTabsStyles() {
       min-width: 160px;
       text-align: center;
     }
-  `;
+  `
 
-  document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
  * Configure les gestionnaires d'événements pour les onglets supplémentaires
  */
-function setupAdditionalTabsEventHandlers() {
+function setupAdditionalTabsEventHandlers () {
   // Sélectionner tous les boutons d'onglets supplémentaires
-  const additionalTabButtons = document.querySelectorAll('.additional-tab-button');
+  const additionalTabButtons = document.querySelectorAll('.additional-tab-button')
 
   // Ajouter un gestionnaire d'événement pour chaque bouton
   additionalTabButtons.forEach(button => {
     button.addEventListener('click', () => {
       // Récupérer l'ID de l'onglet à afficher
-      const tabId = button.dataset.tab;
+      const tabId = button.dataset.tab
 
       // Masquer tous les contenus d'onglets
       document.querySelectorAll('.additional-tab-content').forEach(content => {
-        content.style.display = 'none';
-      });
+        content.style.display = 'none'
+      })
 
       // Afficher le contenu de l'onglet sélectionné
-      document.querySelector(`.additional-tab-content[data-tab="${tabId}"]`).style.display = 'block';
+      document.querySelector(`.additional-tab-content[data-tab="${tabId}"]`).style.display = 'block'
 
       // Mettre à jour la classe active des boutons
-      additionalTabButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+      additionalTabButtons.forEach(btn => btn.classList.remove('active'))
+      button.classList.add('active')
 
       // Déclencher un redimensionnement si nécessaire
-      window.dispatchEvent(new Event('resize'));
-    });
-  });
+      window.dispatchEvent(new Event('resize'))
+    })
+  })
 }

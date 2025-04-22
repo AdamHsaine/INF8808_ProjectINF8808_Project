@@ -5,12 +5,12 @@
 /**
  * Ajoute les styles CSS pour le graphe principal, harmonisé avec les autres visualisations
  */
-export function addHarmonizedStyles() {
+export function addHarmonizedStyles () {
   // Vérifier si les styles existent déjà
-  if (document.getElementById('harmonized-styles')) return;
+  if (document.getElementById('harmonized-styles')) return
 
-  const style = document.createElement('style');
-  style.id = 'harmonized-styles';
+  const style = document.createElement('style')
+  style.id = 'harmonized-styles'
   style.textContent = `
       /* Styles communs pour tous les onglets */
       .tab-content {
@@ -144,54 +144,54 @@ export function addHarmonizedStyles() {
         background-color: white;
         border-radius: 5px;
       }
-    `;
+    `
 
-  document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
  * Applique un style harmonisé à la carte principale
  */
-export function applyHarmonizedMainMapStyle() {
+export function applyHarmonizedMainMapStyle () {
   // Créer un conteneur stylisé pour la carte principale si ce n'est pas déjà fait
-  let mainMapContainer = document.querySelector('.main-map-container');
+  let mainMapContainer = document.querySelector('.main-map-container')
 
   if (!mainMapContainer) {
     // Sélectionner le conteneur de la carte
-    const graphElement = document.querySelector('.graph');
-    const parentElement = graphElement.parentElement;
+    const graphElement = document.querySelector('.graph')
+    const parentElement = graphElement.parentElement
 
     // Créer le nouveau conteneur
-    mainMapContainer = document.createElement('div');
-    mainMapContainer.className = 'main-map-container';
+    mainMapContainer = document.createElement('div')
+    mainMapContainer.className = 'main-map-container'
 
     // Déplacer la carte dans le nouveau conteneur
-    parentElement.insertBefore(mainMapContainer, graphElement);
-    mainMapContainer.appendChild(graphElement);
+    parentElement.insertBefore(mainMapContainer, graphElement)
+    mainMapContainer.appendChild(graphElement)
   }
 
   // Mettre à jour le titre et la description
-  let titleHeader = document.querySelector('.main-map-title');
+  let titleHeader = document.querySelector('.main-map-title')
   if (!titleHeader) {
-    titleHeader = document.createElement('h2');
-    titleHeader.className = 'visualization-title main-map-title';
+    titleHeader = document.createElement('h2')
+    titleHeader.className = 'visualization-title main-map-title'
     // titleHeader.textContent = 'Carte des Crimes par PDQ à Montréal';
-    mainMapContainer.insertBefore(titleHeader, mainMapContainer.firstChild);
+    mainMapContainer.insertBefore(titleHeader, mainMapContainer.firstChild)
   } else {
-    titleHeader.className = 'visualization-title main-map-title';
+    titleHeader.className = 'visualization-title main-map-title'
   }
 
-  let description = document.querySelector('.main-map-description');
+  let description = document.querySelector('.main-map-description')
   if (!description) {
-    description = document.createElement('div');
-    description.className = 'visualization-description main-map-description';
+    description = document.createElement('div')
+    description.className = 'visualization-description main-map-description'
     // description.textContent = 'Cliquez sur un PDQ pour voir les statistiques détaillées.';
-    mainMapContainer.insertBefore(description, mainMapContainer.children[1]);
+    mainMapContainer.insertBefore(description, mainMapContainer.children[1])
   } else {
-    description.className = 'visualization-description main-map-description';
+    description.className = 'visualization-description main-map-description'
   }
 
   // Supprimer les anciens titres s'ils existent
-  const oldTitles = document.querySelectorAll('.title, .subtitle');
-  oldTitles.forEach(title => title.remove());
+  const oldTitles = document.querySelectorAll('.title, .subtitle')
+  oldTitles.forEach(title => title.remove())
 }
