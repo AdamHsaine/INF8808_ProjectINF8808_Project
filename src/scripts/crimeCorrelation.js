@@ -9,41 +9,41 @@
  * @param {Array} crimeData Les données des crimes
  * @param {object} container Le conteneur où placer la visualisation
  */
-export function createCrimeCorrelationAnalysis (crimeData, container) {
+export function createCrimeCorrelationAnalysis(crimeData, container) {
   // Créer un conteneur pour la visualisation
   const analysisDiv = document.createElement('div')
   analysisDiv.className = 'crime-correlation-container'
   analysisDiv.innerHTML = `
-      <h2>Corrélations entre types de crimes et périodes</h2>
-      <div class="analysis-description">
-        <p>Cette analyse examine les relations entre différents types de crimes et les périodes temporelles, 
-        révélant quand certains types de crimes sont plus susceptibles de se produire.</p>
+    <h2>Corrélations entre types de crimes et périodes</h2>
+    <div class="analysis-description">
+      <p>Cette analyse examine les relations entre différents types de crimes et les périodes temporelles, 
+      révélant quand certains types de crimes sont plus susceptibles de se produire.</p>
+    </div>
+    <div class="analysis-controls">
+      <div class="control-group">
+        <label for="correlation-period">Période d'analyse:</label>
+        <select id="correlation-period">
+          <option value="day">Moment de la journée</option>
+          <option value="month">Mois de l'année</option>
+          <option value="weekday">Jour de la semaine</option>
+        </select>
       </div>
-      <div class="analysis-controls">
-        <div class="control-group">
-          <label for="correlation-period">Période d'analyse:</label>
-          <select id="correlation-period">
-            <option value="day">Moment de la journée</option>
-            <option value="month">Mois de l'année</option>
-            <option value="weekday">Jour de la semaine</option>
-          </select>
-        </div>
-        <button id="apply-correlation-controls" class="apply-button">Appliquer</button>
+      <button id="apply-correlation-controls" class="apply-button">Appliquer</button>
+    </div>
+    <div class="correlation-heatmap-container">
+      <svg id="correlation-heatmap" class="analysis-chart"></svg>
+    </div>
+    <div class="correlation-insights">
+      <h3>Principales observations</h3>
+      <div class="insights-content"></div>
+    </div>
+    <div class="period-distribution-section">
+      <h3>Distribution des crimes par période</h3>
+      <div class="period-chart-container">
+        <svg id="period-distribution-chart" class="analysis-chart"></svg>
       </div>
-      <div class="correlation-heatmap-container">
-        <svg id="correlation-heatmap" class="analysis-chart"></svg>
-      </div>
-      <div class="correlation-insights">
-        <h3>Principales observations</h3>
-        <div class="insights-content"></div>
-      </div>
-      <div class="period-distribution-section">
-        <h3>Distribution des crimes par période</h3>
-        <div class="period-chart-container">
-          <svg id="period-distribution-chart" class="analysis-chart"></svg>
-        </div>
-      </div>
-    `
+    </div>
+  `
 
   container.appendChild(analysisDiv)
 
@@ -60,205 +60,205 @@ export function createCrimeCorrelationAnalysis (crimeData, container) {
 }
 
 /**
- * Ajoute les styles CSS pour l'analyse de corrélation
- */
-function addCorrelationAnalysisStyles () {
+* Ajoute les styles CSS pour l'analyse de corrélation
+*/
+function addCorrelationAnalysisStyles() {
   // Vérifier si les styles existent déjà
   if (document.getElementById('crime-correlation-styles')) return
 
   const style = document.createElement('style')
   style.id = 'crime-correlation-styles'
   style.textContent = `
-      .crime-correlation-container {
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      }
-      
-      .crime-correlation-container h2 {
-        margin-top: 0;
-        color: #333;
-        text-align: center;
-        margin-bottom: 15px;
-        font-size: 24px;
-      }
-      
-      .analysis-description {
-        text-align: center;
-        color: #666;
-        margin-bottom: 20px;
-        font-size: 16px;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      
-      .analysis-controls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 25px;
-        padding: 15px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-      }
-      
-      .control-group {
-        display: flex;
-        flex-direction: column;
-      }
-      
-      .control-group label {
-        margin-bottom: 5px;
-        font-weight: bold;
-        font-size: 14px;
-        color: #555;
-      }
-      
-      .control-group select {
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-        min-width: 150px;
-      }
-      
-      .apply-button {
-        align-self: flex-end;
-        background-color: #FB8C00;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 8px 16px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      
-      .apply-button:hover {
-        background-color: #F57C00;
-      }
-      
-      .correlation-heatmap-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 30px;
-        height: 500px;
-      }
-      
-      .analysis-chart {
-        width: 100%;
-        max-width: 900px;
-        height: 100%;
-      }
-      
-      .correlation-insights {
-        margin-bottom: 30px;
-        padding: 15px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        border-left: 4px solid #FB8C00;
-      }
-      
-      .correlation-insights h3 {
-        margin-top: 0;
-        color: #FB8C00;
-        font-size: 18px;
-        margin-bottom: 15px;
-      }
-      
-      .insights-content {
-        color: #333;
-        line-height: 1.5;
-      }
-      
-      .insights-content ul {
-        margin: 0;
-        padding-left: 20px;
-      }
-      
-      .insights-content li {
-        margin-bottom: 8px;
-      }
-      
-      .period-distribution-section {
-        margin-bottom: 30px;
-      }
-      
-      .period-distribution-section h3 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 15px;
-      }
-      
-      .period-chart-container {
-        display: flex;
-        justify-content: center;
-        height: 350px;
-      }
-      
-      .heatmap-cell {
-        stroke: white;
-        stroke-width: 0.5;
-      }
-      
-      .heatmap-cell:hover {
-        stroke-width: 2;
-        stroke: #333;
-      }
-      
-      .correlation-tooltip {
-        position: absolute;
-        background-color: rgba(255, 255, 255, 0.95);
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-        font-size: 14px;
-        pointer-events: none;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        z-index: 1000;
-      }
-      
-      .axis-label {
-        font-size: 14px;
-        font-weight: bold;
-      }
-      
-      .y-axis-label {
-        text-anchor: middle;
-      }
-      
-      .x-axis text {
-        text-anchor: end;
-        transform: rotate(-45deg);
-        font-size: 12px;
-      }
-      
-      .y-axis text {
-        font-size: 12px;
-      }
-      
-      .legend-label {
-        font-size: 10px;
-      }
-      
-      .highlight-cell {
-        stroke: #000;
-        stroke-width: 2;
-      }
-    `
+    .crime-correlation-container {
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .crime-correlation-container h2 {
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+    
+    .analysis-description {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 16px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .analysis-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .control-group label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    .control-group select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 150px;
+    }
+    
+    .apply-button {
+      align-self: flex-end;
+      background-color: #FB8C00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .apply-button:hover {
+      background-color: #F57C00;
+    }
+    
+    .correlation-heatmap-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      height: 500px;
+    }
+    
+    .analysis-chart {
+      width: 100%;
+      max-width: 900px;
+      height: 100%;
+    }
+    
+    .correlation-insights {
+      margin-bottom: 30px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid #FB8C00;
+    }
+    
+    .correlation-insights h3 {
+      margin-top: 0;
+      color: #FB8C00;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .insights-content {
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    .insights-content ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .insights-content li {
+      margin-bottom: 8px;
+    }
+    
+    .period-distribution-section {
+      margin-bottom: 30px;
+    }
+    
+    .period-distribution-section h3 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .period-chart-container {
+      display: flex;
+      justify-content: center;
+      height: 350px;
+    }
+    
+    .heatmap-cell {
+      stroke: white;
+      stroke-width: 0.5;
+    }
+    
+    .heatmap-cell:hover {
+      stroke-width: 2;
+      stroke: #333;
+    }
+    
+    .correlation-tooltip {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 14px;
+      pointer-events: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+    
+    .axis-label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .y-axis-label {
+      text-anchor: middle;
+    }
+    
+    .x-axis text {
+      text-anchor: end;
+      transform: rotate(-45deg);
+      font-size: 12px;
+    }
+    
+    .y-axis text {
+      font-size: 12px;
+    }
+    
+    .legend-label {
+      font-size: 10px;
+    }
+    
+    .highlight-cell {
+      stroke: #000;
+      stroke-width: 2;
+    }
+  `
 
   document.head.appendChild(style)
 }
 
 /**
- * Met à jour l'analyse de corrélation en fonction des contrôles sélectionnés
- *
- * @param {Array} crimeData Les données des crimes
- */
-function updateCorrelationAnalysis (crimeData) {
+* Met à jour l'analyse de corrélation en fonction des contrôles sélectionnés
+*
+* @param {Array} crimeData Les données des crimes
+*/
+function updateCorrelationAnalysis(crimeData) {
   // Récupérer les valeurs des contrôles
   const periodType = document.getElementById('correlation-period').value
 
@@ -276,14 +276,14 @@ function updateCorrelationAnalysis (crimeData) {
 }
 
 /**
- * Traite les données pour l'analyse de corrélation
- *
- * @param {Array} crimeData Les données brutes des crimes
- * @param {string} periodType Le type de période d'analyse
- * @param {string} categoryCount Le nombre de catégories à inclure
- * @returns {object} Les données traitées pour l'analyse
- */
-function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount) {
+* Traite les données pour l'analyse de corrélation
+*
+* @param {Array} crimeData Les données brutes des crimes
+* @param {string} periodType Le type de période d'analyse
+* @param {string} categoryCount Le nombre de catégories à inclure
+* @returns {object} Les données traitées pour l'analyse
+*/
+function processDataForCorrelationAnalysis(crimeData, periodType, categoryCount) {
   // Filtrer les données avec date valide
   const validData = crimeData.filter(crime => crime.DATE && crime.CATEGORIE)
 
@@ -380,13 +380,13 @@ function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount
 }
 
 /**
- * Extrait les périodes pertinentes selon le type d'analyse
- *
- * @param {Array} data Les données filtrées
- * @param {string} periodType Le type de période d'analyse
- * @returns {Array} Les périodes disponibles
- */
-function extractPeriods (data, periodType) {
+* Extrait les périodes pertinentes selon le type d'analyse
+*
+* @param {Array} data Les données filtrées
+* @param {string} periodType Le type de période d'analyse
+* @returns {Array} Les périodes disponibles
+*/
+function extractPeriods(data, periodType) {
   if (periodType === 'day') {
     // Périodes de la journée (en utilisant le champ QUART)
     return ['jour', 'soir', 'nuit']
@@ -402,14 +402,14 @@ function extractPeriods (data, periodType) {
 }
 
 /**
- * Obtient la période correspondante pour un crime
- *
- * @param {string} date La date du crime
- * @param {string} quart Le quart de travail (pour période de la journée)
- * @param {string} periodType Le type de période d'analyse
- * @returns {string} La période correspondante
- */
-function getPeriod (date, quart, periodType) {
+* Obtient la période correspondante pour un crime
+*
+* @param {string} date La date du crime
+* @param {string} quart Le quart de travail (pour période de la journée)
+* @param {string} periodType Le type de période d'analyse
+* @returns {string} La période correspondante
+*/
+function getPeriod(date, quart, periodType) {
   const d = new Date(date)
 
   if (periodType === 'day') {
@@ -428,12 +428,12 @@ function getPeriod (date, quart, periodType) {
 }
 
 /**
- * Crée une heatmap de corrélation entre catégories de crimes et périodes
- *
- * @param {object} data Les données traitées
- * @param {string} periodType Le type de période d'analyse
- */
-function createCorrelationHeatmap (data, periodType) {
+* Crée une heatmap de corrélation entre catégories de crimes et périodes
+*
+* @param {object} data Les données traitées
+* @param {string} periodType Le type de période d'analyse
+*/
+function createCorrelationHeatmap(data, periodType) {
   // Sélectionner et vider le SVG
   const svg = d3.select('#correlation-heatmap')
   svg.selectAll('*').remove()
@@ -465,12 +465,9 @@ function createCorrelationHeatmap (data, periodType) {
 
   // Fonction pour déterminer la couleur selon l'écart
   /**
-   * Détermine la couleur en fonction de l'écart (deviation).
-   *
-   * @param {number} deviation L'écart entre les valeurs réelles et attendues (positif ou négatif).
-   * @returns {string} La couleur associée à l'écart, utilisant la fonction colorScale.
+   * @param deviation
    */
-  function getColor (deviation) {
+  function getColor(deviation) {
     return colorScale(-deviation) // Inverser pour que rouge = positif, bleu = négatif
   }
 
@@ -563,7 +560,7 @@ function createCorrelationHeatmap (data, periodType) {
 
   const legendGroup = svg.append('g')
     .attr('class', 'heatmap-legend')
-    .attr('transform', `translate(${margin.left + width - legendWidth - 20}, ${margin.top + 410})`)
+    .attr('transform', `translate(${margin.left + width - legendWidth - 5}, ${margin.top + 410})`)
 
   legendGroup.append('text')
     .attr('x', 0)
@@ -607,7 +604,7 @@ function createCorrelationHeatmap (data, periodType) {
     .attr('x', -50)
     .attr('y', legendHeight + 15)
     .attr('text-anchor', 'start')
-    .text('-50% (sous-représenté)')
+    .text('+50% (sur-représenté)')
 
   legendGroup.append('text')
     .attr('class', 'legend-label')
@@ -621,16 +618,16 @@ function createCorrelationHeatmap (data, periodType) {
     .attr('x', legendWidth + 50)
     .attr('y', legendHeight + 15)
     .attr('text-anchor', 'end')
-    .text('+50% (sur-représenté)')
+    .text('-50% (sous-représenté)')
 }
 
 /**
- * Crée un graphique de distribution des crimes par période
- *
- * @param {object} data Les données traitées
- * @param {string} periodType Le type de période d'analyse
- */
-function createPeriodDistributionChart (data, periodType) {
+* Crée un graphique de distribution des crimes par période
+*
+* @param {object} data Les données traitées
+* @param {string} periodType Le type de période d'analyse
+*/
+function createPeriodDistributionChart(data, periodType) {
   // Sélectionner et vider le SVG
   const svg = d3.select('#period-distribution-chart')
   svg.selectAll('*').remove()
@@ -747,12 +744,12 @@ function createPeriodDistributionChart (data, periodType) {
 }
 
 /**
- * Génère des insights basés sur l'analyse des corrélations
- *
- * @param {object} data Les données traitées
- * @param {string} periodType Le type de période d'analyse
- */
-function generateCorrelationInsights (data, periodType) {
+* Génère des insights basés sur l'analyse des corrélations
+*
+* @param {object} data Les données traitées
+* @param {string} periodType Le type de période d'analyse
+*/
+function generateCorrelationInsights(data, periodType) {
   const insightsContainer = document.querySelector('.insights-content')
   insightsContainer.innerHTML = ''
 
@@ -774,45 +771,45 @@ function generateCorrelationInsights (data, periodType) {
   // Insight sur les corrélations positives
   if (positiveCorrelations.length > 0) {
     insightsHTML += `
-        <li>
-          <strong>Associations temporelles significatives:</strong> 
-          ${positiveCorrelations.slice(0, 3).map(c =>
-            `Les crimes de type <strong>${formatCategoryName(c.category)}</strong> sont ${Math.round(c.deviation)}% plus fréquents ${formatPeriodWithType(c.period, periodType)} que ce qui serait attendu si la distribution était uniforme.`
-        ).join(' ')}
-        </li>
-      `
+      <li>
+        <strong>Associations temporelles significatives:</strong> 
+        ${positiveCorrelations.slice(0, 3).map(c =>
+      `Les crimes de type <strong>${formatCategoryName(c.category)}</strong> sont ${Math.round(c.deviation)}% plus fréquents ${formatPeriodWithType(c.period, periodType)} que ce qui serait attendu si la distribution était uniforme.`
+    ).join(' ')}
+      </li>
+    `
   }
 
   // Insight sur les corrélations négatives
   if (negativeCorrelations.length > 0) {
     insightsHTML += `
-        <li>
-          <strong>Périodes de sous-représentation:</strong> 
-          ${negativeCorrelations.slice(0, 2).map(c =>
-            `Les crimes de type <strong>${formatCategoryName(c.category)}</strong> sont ${Math.abs(Math.round(c.deviation))}% moins fréquents ${formatPeriodWithType(c.period, periodType)} que la moyenne.`
-        ).join(' ')}
-        </li>
-      `
+      <li>
+        <strong>Périodes de sous-représentation:</strong> 
+        ${negativeCorrelations.slice(0, 2).map(c =>
+      `Les crimes de type <strong>${formatCategoryName(c.category)}</strong> sont ${Math.abs(Math.round(c.deviation))}% moins fréquents ${formatPeriodWithType(c.period, periodType)} que la moyenne.`
+    ).join(' ')}
+      </li>
+    `
   }
 
   // Insight sur la période de pointe
   insightsHTML += `
 <li>
-  <strong>Période de pointe:</strong> 
-  ${formatPeriodWithType(peakPeriod.period, periodType, true)} est la période où le plus grand nombre de crimes sont commis, 
-  représentant ${peakPeriod.percentage.toFixed(1)}% de tous les crimes.
-  ${peakPeriod.topCategories.length > 0
-            ? `Les catégories les plus fréquentes durant cette période sont ${peakPeriod.topCategories.map(c => formatCategoryName(c)).join(', ')}.`
-            : ''}
+<strong>Période de pointe:</strong> 
+${formatPeriodWithType(peakPeriod.period, periodType, true)} est la période où le plus grand nombre de crimes sont commis, 
+représentant ${peakPeriod.percentage.toFixed(1)}% de tous les crimes.
+${peakPeriod.topCategories.length > 0
+      ? `Les catégories les plus fréquentes durant cette période sont ${peakPeriod.topCategories.map(c => formatCategoryName(c)).join(', ')}.`
+      : ''}
 </li>
 `
 
   // Insight sur la période creuse
   insightsHTML += `
 <li>
-  <strong>Période creuse:</strong> 
-  ${formatPeriodWithType(lowPeriod.period, periodType, true)} est la période avec le moins de crimes, 
-  représentant seulement ${lowPeriod.percentage.toFixed(1)}% de tous les crimes.
+<strong>Période creuse:</strong> 
+${formatPeriodWithType(lowPeriod.period, periodType, true)} est la période avec le moins de crimes, 
+représentant seulement ${lowPeriod.percentage.toFixed(1)}% de tous les crimes.
 </li>
 `
 
@@ -822,13 +819,13 @@ function generateCorrelationInsights (data, periodType) {
 }
 
 /**
- * Trouve les corrélations les plus fortes (positives ou négatives)
- *
- * @param {object} data Les données traitées
- * @param {boolean} positive Rechercher les corrélations positives (true) ou négatives (false)
- * @returns {Array} Les corrélations les plus fortes
- */
-function findStrongCorrelations (data, positive) {
+* Trouve les corrélations les plus fortes (positives ou négatives)
+*
+* @param {object} data Les données traitées
+* @param {boolean} positive Rechercher les corrélations positives (true) ou négatives (false)
+* @returns {Array} Les corrélations les plus fortes
+*/
+function findStrongCorrelations(data, positive) {
   const correlations = []
 
   data.selectedCategories.forEach(category => {
@@ -859,12 +856,12 @@ function findStrongCorrelations (data, positive) {
 }
 
 /**
- * Trouve la période avec le plus de crimes
- *
- * @param {object} data Les données traitées
- * @returns {object} Informations sur la période de pointe
- */
-function findPeakPeriod (data) {
+* Trouve la période avec le plus de crimes
+*
+* @param {object} data Les données traitées
+* @returns {object} Informations sur la période de pointe
+*/
+function findPeakPeriod(data) {
   // Trouver la période avec le plus grand nombre de crimes
   let maxCount = 0
   let peakPeriod = null
@@ -902,12 +899,12 @@ function findPeakPeriod (data) {
 }
 
 /**
- * Trouve la période avec le moins de crimes
- *
- * @param {object} data Les données traitées
- * @returns {object} Informations sur la période creuse
- */
-function findLowPeriod (data) {
+* Trouve la période avec le moins de crimes
+*
+* @param {object} data Les données traitées
+* @returns {object} Informations sur la période creuse
+*/
+function findLowPeriod(data) {
   // Trouver la période avec le plus petit nombre de crimes
   let minCount = Infinity
   let lowPeriod = null
@@ -930,14 +927,14 @@ function findLowPeriod (data) {
 }
 
 /**
- * Formate une période en fonction du type
- *
- * @param {string} period La période
- * @param {string} periodType Le type de période
- * @param {boolean} capitalize Mettre la première lettre en majuscule
- * @returns {string} La période formatée
- */
-function formatPeriodWithType (period, periodType, capitalize = false) {
+* Formate une période en fonction du type
+*
+* @param {string} period La période
+* @param {string} periodType Le type de période
+* @param {boolean} capitalize Mettre la première lettre en majuscule
+* @returns {string} La période formatée
+*/
+function formatPeriodWithType(period, periodType, capitalize = false) {
   let result = ''
 
   if (periodType === 'day') {
@@ -968,13 +965,13 @@ function formatPeriodWithType (period, periodType, capitalize = false) {
 }
 
 /**
- * Affiche une infobulle pour une cellule de la heatmap
- *
- * @param {Event} event L'événement de souris
- * @param {object} data Les données de la cellule
- * @param {string} periodType Le type de période
- */
-function displayPeriodTooltip (event, data, periodType) {
+* Affiche une infobulle pour une cellule de la heatmap
+*
+* @param {Event} event L'événement de souris
+* @param {object} data Les données de la cellule
+* @param {string} periodType Le type de période
+*/
+function displayPeriodTooltip(event, data, periodType) {
   // Créer l'infobulle si elle n'existe pas
   if (!d3.select('.correlation-tooltip').size()) {
     d3.select('body').append('div')
@@ -988,11 +985,11 @@ function displayPeriodTooltip (event, data, periodType) {
   // Définir le contenu de l'infobulle
   const tooltipContent = `
 <div style="text-align: center; font-weight: bold; margin-bottom: 8px; color: #FB8C00; font-size: 14px;">
-  ${formattedPeriod}
+${formattedPeriod}
 </div>
 <div>
-  <strong>Nombre de crimes:</strong> ${data.count}<br>
-  <strong>Pourcentage du total:</strong> ${data.percentage.toFixed(1)}%
+<strong>Nombre de crimes:</strong> ${data.count}<br>
+<strong>Pourcentage du total:</strong> ${data.percentage.toFixed(1)}%
 </div>
 `
 
@@ -1007,9 +1004,9 @@ function displayPeriodTooltip (event, data, periodType) {
 }
 
 /**
- * Cache l'infobulle de corrélation
- */
-function hideCorrelationTooltip () {
+* Cache l'infobulle de corrélation
+*/
+function hideCorrelationTooltip() {
   d3.select('.correlation-tooltip')
     .transition()
     .duration(500)
@@ -1017,13 +1014,13 @@ function hideCorrelationTooltip () {
 }
 
 /**
- * Obtient le libellé de la période
- *
- * @param {string} period La période
- * @param {string} periodType Le type de période
- * @returns {string} Le libellé formaté
- */
-function getPeriodLabel (period, periodType) {
+* Obtient le libellé de la période
+*
+* @param {string} period La période
+* @param {string} periodType Le type de période
+* @returns {string} Le libellé formaté
+*/
+function getPeriodLabel(period, periodType) {
   if (periodType === 'day') {
     const dayLabels = {
       jour: 'Journée (8h-16h)',
@@ -1047,12 +1044,12 @@ function getPeriodLabel (period, periodType) {
 }
 
 /**
- * Obtient le libellé du type de période
- *
- * @param {string} periodType Le type de période
- * @returns {string} Le libellé formaté
- */
-function getPeriodTypeLabel (periodType) {
+* Obtient le libellé du type de période
+*
+* @param {string} periodType Le type de période
+* @returns {string} Le libellé formaté
+*/
+function getPeriodTypeLabel(periodType) {
   switch (periodType) {
     case 'day':
       return 'Moment de la journée'
@@ -1066,24 +1063,26 @@ function getPeriodTypeLabel (periodType) {
 }
 
 /**
- * Formate le nom d'une catégorie pour l'affichage
- *
- * @param {string} category La catégorie à formater
- * @returns {string} Le nom formaté
- */
-function formatCategoryName (category) {
+* Formate le nom d'une catégorie pour l'affichage
+*
+* @param {string} category La catégorie à formater
+* @returns {string} Le nom formaté
+*/
+function formatCategoryName(category) {
   if (!category) return 'Non spécifié'
   return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()
 }
-
+// *
+// * @param { Event } event L'événement de souris
+//     * @param { Object } data Les données de la cellule
+//         * @param { string } periodType Le type de période
+// */
 /**
- * Affiche une infobulle avec les informations de corrélation sur un événement de souris.
- *
- * @param {Event} event L'événement de souris qui déclenche l'affichage de l'infobulle.
- * @param {object} data Les données de la cellule, incluant la catégorie, les valeurs observées et attendues, et l'écart.
- * @param {string} periodType Le type de période (par exemple, mois, année) utilisé pour formater la période.
- */
-function displayCorrelationTooltip (event, data, periodType) {
+* @param event
+* @param data
+* @param periodType
+*/
+function displayCorrelationTooltip(event, data, periodType) {
   // Créer l'infobulle si elle n'existe pas
   if (!d3.select('.correlation-tooltip').size()) {
     d3.select('body').append('div')
@@ -1108,20 +1107,20 @@ function displayCorrelationTooltip (event, data, periodType) {
 
   // Définir le contenu de l'infobulle
   const tooltipContent = `
-    <div style="text-align: center; font-weight: bold; margin-bottom: 8px; color: #FB8C00; font-size: 14px;">
-    ${formatCategoryName(data.category)}
-    </div>
-    <div style="margin-bottom: 5px;">
-    <strong>Période:</strong> ${formattedPeriod}
-    </div>
-    <hr style="margin: 5px 0; border: none; border-top: 1px solid #ddd;">
-    <div>
-    <strong>Nombre observé:</strong> ${data.actual} crimes<br>
-    <strong>Nombre attendu:</strong> ${data.expected.toFixed(1)} crimes<br>
-    <strong>Écart:</strong> ${data.deviation.toFixed(1)}%<br>
-    <strong>Type:</strong> ${deviationType}
-    </div>
-    `
+<div style="text-align: center; font-weight: bold; margin-bottom: 8px; color: #FB8C00; font-size: 14px;">
+${formatCategoryName(data.category)}
+</div>
+<div style="margin-bottom: 5px;">
+<strong>Période:</strong> ${formattedPeriod}
+</div>
+<hr style="margin: 5px 0; border: none; border-top: 1px solid #ddd;">
+<div>
+<strong>Nombre observé:</strong> ${data.actual} crimes<br>
+<strong>Nombre attendu:</strong> ${data.expected.toFixed(1)} crimes<br>
+<strong>Écart:</strong> ${data.deviation.toFixed(1)}%<br>
+<strong>Type:</strong> ${deviationType}
+</div>
+`
 
   // Afficher et positionner l'infobulle
   d3.select('.correlation-tooltip')
@@ -1131,6 +1130,7 @@ function displayCorrelationTooltip (event, data, periodType) {
     .transition()
     .duration(200)
     .style('opacity', 0.9)
+
 
   // Afficher et positionner l'infobulle
   d3.select('.correlation-tooltip')
