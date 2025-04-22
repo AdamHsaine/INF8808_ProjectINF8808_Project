@@ -1394,7 +1394,7 @@ function createSeasonalLineChart(data) {
   // Disposition horizontale de la légende
   seasonLabels.forEach((item, i) => {
     const legendItem = legend.append('g')
-      .attr('transform', `translate(${i * 75}, 0)`);
+      .attr('transform', `translate(${i * 100}, 0)`);
 
     legendItem.append('rect')
       .attr('width', 15)
