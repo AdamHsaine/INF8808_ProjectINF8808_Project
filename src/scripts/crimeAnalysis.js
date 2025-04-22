@@ -15,7 +15,7 @@ export function processCrimeData(crimeData) {
     // Extraire les années uniques
     const years = [...new Set(crimeData
         .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-        .filter(y => y !== null))].sort()
+        .filter(y => y !== null && y >= 2015))].sort()
 
     // Agréger les crimes par PDQ
     const byPDQ = {}
@@ -173,6 +173,7 @@ export function createColorScale(crimeByPDQ) {
 
     return colorScale;
 }
+
 
 /**
  * Filtre les données criminelles selon les critères sélectionnés
