@@ -5,14 +5,14 @@
 
 /**
  * Crée un graphique d'évolution des types de crimes
- * 
+ *
  * @param {Array} crimeData Les données des crimes
- * @param {Object} container Le conteneur où placer la visualisation
+ * @param {object} container Le conteneur où placer la visualisation
  */
-export function createCrimeCategoriesChart(crimeData, container) {
+export function createCrimeCategoriesChart (crimeData, container) {
   // Créer un conteneur pour le graphique d'évolution
-  const evolutionDiv = document.createElement('div');
-  evolutionDiv.className = 'crime-categories-container';
+  const evolutionDiv = document.createElement('div')
+  evolutionDiv.className = 'crime-categories-container'
   evolutionDiv.innerHTML = `
       <h2>Évolution des types de crimes au fil des années</h2>
       <div class="chart-description">
@@ -39,45 +39,45 @@ export function createCrimeCategoriesChart(crimeData, container) {
         <svg class="categories-chart-svg"></svg>
       </div>
       <div class="categories-legend"></div>
-    `;
+    `
 
-  container.appendChild(evolutionDiv);
+  container.appendChild(evolutionDiv)
 
   // Ajouter les styles pour le graphique d'évolution
-  addCategoriesChartStyles();
+  addCategoriesChartStyles()
 
   // Extraire les PDQ uniques
   const pdqs = [...new Set(crimeData
     .map(d => d.PDQ)
-    .filter(p => p !== null))].sort((a, b) => a - b);
+    .filter(p => p !== null))].sort((a, b) => a - b)
 
   // Remplir le sélecteur de PDQ
-  const pdqSelect = document.getElementById('pdq-filter-categories');
+  const pdqSelect = document.getElementById('pdq-filter-categories')
   pdqs.forEach(pdq => {
-    const option = document.createElement('option');
-    option.value = pdq;
-    option.textContent = `PDQ ${pdq}`;
-    pdqSelect.appendChild(option);
-  });
+    const option = document.createElement('option')
+    option.value = pdq
+    option.textContent = `PDQ ${pdq}`
+    pdqSelect.appendChild(option)
+  })
 
   // Gestionnaire d'événement pour le bouton d'application des filtres
   document.getElementById('apply-categories-filters').addEventListener('click', function () {
-    updateCategoriesChart(crimeData);
-  });
+    updateCategoriesChart(crimeData)
+  })
 
   // Déclencher le chargement initial
-  updateCategoriesChart(crimeData);
+  updateCategoriesChart(crimeData)
 }
 
 /**
  * Ajoute les styles CSS pour le graphique d'évolution des catégories
  */
-function addCategoriesChartStyles() {
+function addCategoriesChartStyles () {
   // Vérifier si les styles existent déjà
-  if (document.getElementById('categories-chart-styles')) return;
+  if (document.getElementById('categories-chart-styles')) return
 
-  const style = document.createElement('style');
-  style.id = 'categories-chart-styles';
+  const style = document.createElement('style')
+  style.id = 'categories-chart-styles'
   style.textContent = `
       .crime-categories-container {
         margin-top: 40px;
@@ -224,214 +224,212 @@ function addCategoriesChartStyles() {
       .categories-point {
         cursor: pointer;
       }
-    `;
+    `
 
-  document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
  * Met à jour le graphique d'évolution des catégories en fonction des filtres sélectionnés
- * 
+ *
  * @param {Array} crimeData Les données des crimes
  */
-function updateCategoriesChart(crimeData) {
+function updateCategoriesChart (crimeData) {
   // Récupérer les valeurs des filtres
-  const pdqFilter = document.getElementById('pdq-filter-categories').value;
-  const displayMode = document.getElementById('display-mode').value;
+  const pdqFilter = document.getElementById('pdq-filter-categories').value
+  const displayMode = document.getElementById('display-mode').value
 
   // Filtrer les données selon les critères
   const filteredData = crimeData.filter(crime => {
     // Filtre par PDQ
     if (pdqFilter !== 'all' && crime.PDQ !== parseInt(pdqFilter)) {
-      return false;
+      return false
     }
 
     // Vérifier que la date et la catégorie existent
-    return crime.DATE && crime.CATEGORIE;
-  });
+    return crime.DATE && crime.CATEGORIE
+  })
 
   // Traiter les données pour le graphique
-  const processedData = processDataForCategoriesChart(filteredData, displayMode);
+  const processedData = processDataForCategoriesChart(filteredData, displayMode)
 
   // Créer le graphique
-  drawCategoriesChart(processedData, displayMode);
+  drawCategoriesChart(processedData, displayMode)
 }
 
 /**
  * Traite les données pour le graphique d'évolution des catégories
- * 
+ *
  * @param {Array} filteredData Les données filtrées
  * @param {string} displayMode Le mode d'affichage (absolute, percentage, growth)
- * @returns {Object} Les données formatées pour le graphique
+ * @returns {object} Les données formatées pour le graphique
  */
-function processDataForCategoriesChart(filteredData, displayMode) {
+function processDataForCategoriesChart (filteredData, displayMode) {
   // 1. Extraire les années et catégories uniques
   const years = [...new Set(filteredData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-    .filter(y => y !== null && y >= 2015))].sort();
+    .filter(y => y !== null && y >= 2015))].sort()
 
   const categories = [...new Set(filteredData
     .map(d => d.CATEGORIE)
-    .filter(c => c !== null))];
+    .filter(c => c !== null))]
 
   // 2. Agréger les données par année et catégorie
-  const countsByYearAndCategory = {};
+  const countsByYearAndCategory = {}
 
   // Initialiser la structure
   years.forEach(year => {
-    countsByYearAndCategory[year] = {};
+    countsByYearAndCategory[year] = {}
     categories.forEach(category => {
-      countsByYearAndCategory[year][category] = 0;
-    });
-  });
+      countsByYearAndCategory[year][category] = 0
+    })
+  })
 
   // Remplir avec les données
   filteredData.forEach(crime => {
     if (crime.DATE && crime.CATEGORIE) {
-      const year = new Date(crime.DATE).getFullYear();
-      const category = crime.CATEGORIE;
+      const year = new Date(crime.DATE).getFullYear()
+      const category = crime.CATEGORIE
 
       if (countsByYearAndCategory[year] && countsByYearAndCategory[year][category] !== undefined) {
-        countsByYearAndCategory[year][category]++;
+        countsByYearAndCategory[year][category]++
       }
     }
-  });
+  })
 
   // 3. Calculer les totaux par année pour les pourcentages
-  const totalsByYear = {};
+  const totalsByYear = {}
   years.forEach(year => {
-    totalsByYear[year] = Object.values(countsByYearAndCategory[year]).reduce((sum, count) => sum + count, 0);
-  });
+    totalsByYear[year] = Object.values(countsByYearAndCategory[year]).reduce((sum, count) => sum + count, 0)
+  })
 
   // 4. Préparer les séries pour chaque catégorie selon le mode d'affichage
   const series = categories.map(category => {
     const yearValues = years.map((year, index) => {
-      const count = countsByYearAndCategory[year][category];
+      const count = countsByYearAndCategory[year][category]
 
       if (displayMode === 'absolute') {
         // Valeurs absolues
         return { year, value: count }
-      }
-      else if (displayMode === 'percentage') {
+      } else if (displayMode === 'percentage') {
         // Pourcentages
-        const total = totalsByYear[year];
-        const percentage = total > 0 ? (count / total) * 100 : 0;
-        return { year, value: percentage };
-      }
-      else if (displayMode === 'growth') {
+        const total = totalsByYear[year]
+        const percentage = total > 0 ? (count / total) * 100 : 0
+        return { year, value: percentage }
+      } else if (displayMode === 'growth') {
         // Taux de croissance (par rapport à l'année précédente)
         if (index === 0) {
-          return { year, value: 0 }; // Premier point à 0
+          return { year, value: 0 } // Premier point à 0
         } else {
-          const previousYear = years[index - 1];
-          const previousCount = countsByYearAndCategory[previousYear][category];
+          const previousYear = years[index - 1]
+          const previousCount = countsByYearAndCategory[previousYear][category]
 
           if (previousCount === 0) {
-            return { year, value: count > 0 ? 100 : 0 }; // Si précédent = 0, et actuel > 0: 100%
+            return { year, value: count > 0 ? 100 : 0 } // Si précédent = 0, et actuel > 0: 100%
           } else {
-            const growthRate = ((count - previousCount) / previousCount) * 100;
-            return { year, value: growthRate };
+            const growthRate = ((count - previousCount) / previousCount) * 100
+            return { year, value: growthRate }
           }
         }
       }
-    });
+    })
 
     return {
       category,
       values: yearValues
-    };
-  });
+    }
+  })
 
   return {
     years,
     categories,
     series
-  };
+  }
 }
 
 /**
  * Dessine le graphique d'évolution des catégories
- * 
- * @param {Object} data Les données formatées pour le graphique
+ *
+ * @param {object} data Les données formatées pour le graphique
  * @param {string} displayMode Le mode d'affichage
  */
-function drawCategoriesChart(data, displayMode) {
+function drawCategoriesChart (data, displayMode) {
   // Vérifier si des données sont disponibles
   if (data.years.length === 0 || data.categories.length === 0) {
-    const chartArea = document.querySelector('.categories-chart-area');
-    chartArea.innerHTML = '<div class="empty-data-message">Aucune donnée disponible pour les filtres sélectionnés</div>';
-    document.querySelector('.categories-legend').innerHTML = '';
-    return;
+    const chartArea = document.querySelector('.categories-chart-area')
+    chartArea.innerHTML = '<div class="empty-data-message">Aucune donnée disponible pour les filtres sélectionnés</div>'
+    document.querySelector('.categories-legend').innerHTML = ''
+    return
   }
 
   // Réinitialiser la zone du graphique
-  const chartArea = document.querySelector('.categories-chart-area');
-  chartArea.innerHTML = '<svg class="categories-chart-svg"></svg>';
+  const chartArea = document.querySelector('.categories-chart-area')
+  chartArea.innerHTML = '<svg class="categories-chart-svg"></svg>'
 
   // Dimensions
-  const margin = { top: 50, right: 80, bottom: 60, left: 80 };
-  const width = 960 - margin.left - margin.right;
-  const height = 500 - margin.top - margin.bottom;
+  const margin = { top: 50, right: 80, bottom: 60, left: 80 }
+  const width = 960 - margin.left - margin.right
+  const height = 500 - margin.top - margin.bottom
 
   // Créer le SVG
   const svg = d3.select('.categories-chart-svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
   // Échelles
   const x = d3.scalePoint()
     .domain(data.years)
     .range([0, width])
-    .padding(0.5);
+    .padding(0.5)
 
   // Déterminer les valeurs min et max pour l'échelle Y
-  let yMin = 0;
-  let yMax = 0;
+  let yMin = 0
+  let yMax = 0
 
   data.series.forEach(serie => {
     serie.values.forEach(point => {
-      if (point.value < yMin) yMin = point.value;
-      if (point.value > yMax) yMax = point.value;
-    });
-  });
+      if (point.value < yMin) yMin = point.value
+      if (point.value > yMax) yMax = point.value
+    })
+  })
 
   // Ajouter une marge de 10% pour yMax
-  yMax = yMax * 1.1;
+  yMax = yMax * 1.1
 
   // Si mode croissance, avoir une plage symétrique pour faciliter la lecture
   if (displayMode === 'growth') {
-    const absMax = Math.max(Math.abs(yMin), Math.abs(yMax));
-    yMin = -absMax;
-    yMax = absMax;
+    const absMax = Math.max(Math.abs(yMin), Math.abs(yMax))
+    yMin = -absMax
+    yMax = absMax
   }
 
   const y = d3.scaleLinear()
     .domain([yMin, yMax])
     .nice()
-    .range([height, 0]);
+    .range([height, 0])
 
   // Couleurs pour les catégories
   const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-    .domain(data.categories);
+    .domain(data.categories)
 
   // Créer les lignes
   const line = d3.line()
     .x(d => x(d.year))
     .y(d => y(d.value))
-    .curve(d3.curveMonotoneX); // Lissage des courbes
+    .curve(d3.curveMonotoneX) // Lissage des courbes
 
   // Titres des axes
-  const xAxisTitle = 'Année';
-  let yAxisTitle;
+  const xAxisTitle = 'Année'
+  let yAxisTitle
 
   if (displayMode === 'absolute') {
-    yAxisTitle = 'Nombre de crimes';
+    yAxisTitle = 'Nombre de crimes'
   } else if (displayMode === 'percentage') {
-    yAxisTitle = 'Pourcentage (%)';
+    yAxisTitle = 'Pourcentage (%)'
   } else if (displayMode === 'growth') {
-    yAxisTitle = 'Taux de croissance (%)';
+    yAxisTitle = 'Taux de croissance (%)'
   }
 
   // Dessiner les axes
@@ -440,11 +438,11 @@ function drawCategoriesChart(data, displayMode) {
     .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(x))
     .selectAll('text')
-    .style('text-anchor', 'middle');
+    .style('text-anchor', 'middle')
 
   svg.append('g')
     .attr('class', 'y-axis')
-    .call(d3.axisLeft(y).ticks(10));
+    .call(d3.axisLeft(y).ticks(10))
 
   // Titres des axes
   svg.append('text')
@@ -452,7 +450,7 @@ function drawCategoriesChart(data, displayMode) {
     .attr('x', width / 2)
     .attr('y', height + margin.bottom - 10)
     .attr('text-anchor', 'middle')
-    .text(xAxisTitle);
+    .text(xAxisTitle)
 
   svg.append('text')
     .attr('class', 'axis-title')
@@ -460,7 +458,7 @@ function drawCategoriesChart(data, displayMode) {
     .attr('x', -height / 2)
     .attr('y', -margin.left + 20)
     .attr('text-anchor', 'middle')
-    .text(yAxisTitle);
+    .text(yAxisTitle)
 
   // Titre du graphique
   svg.append('text')
@@ -468,7 +466,7 @@ function drawCategoriesChart(data, displayMode) {
     .attr('x', width / 2)
     .attr('y', -margin.top / 2)
     .attr('text-anchor', 'middle')
-    .text('Évolution des types de crimes au fil des années');
+    .text('Évolution des types de crimes au fil des années')
 
   // Lignes de référence horizontales
   svg.append('g')
@@ -480,7 +478,7 @@ function drawCategoriesChart(data, displayMode) {
     .selectAll('line')
     .style('stroke', '#e0e0e0')
     .style('stroke-opacity', 0.7)
-    .style('shape-rendering', 'crispEdges');
+    .style('shape-rendering', 'crispEdges')
 
   // Ligne de référence à 0 pour le mode croissance
   if (displayMode === 'growth') {
@@ -491,14 +489,14 @@ function drawCategoriesChart(data, displayMode) {
       .attr('y2', y(0))
       .style('stroke', '#666')
       .style('stroke-width', 1)
-      .style('stroke-dasharray', '4,4');
+      .style('stroke-dasharray', '4,4')
   }
 
   // Infobulle
   const tooltip = d3.select('body')
     .append('div')
     .attr('class', 'categories-tooltip')
-    .style('opacity', 0);
+    .style('opacity', 0)
 
   // Dessiner les lignes pour chaque série
   data.series.forEach(serie => {
@@ -511,12 +509,12 @@ function drawCategoriesChart(data, displayMode) {
         .attr('d', line)
         .on('mouseover', function () {
           d3.select(this)
-            .attr('stroke-width', 5);
+            .attr('stroke-width', 5)
         })
         .on('mouseout', function () {
           d3.select(this)
-            .attr('stroke-width', 3);
-        });
+            .attr('stroke-width', 3)
+        })
 
       // Ajouter les points pour chaque donnée
       svg.selectAll(`.point-${serie.category.replace(/\s+/g, '-')}`)
@@ -535,7 +533,7 @@ function drawCategoriesChart(data, displayMode) {
           d3.select(this)
             .transition()
             .duration(200)
-            .attr('r', 8);
+            .attr('r', 8)
 
           // Contenu de l'infobulle selon le mode d'affichage
           let tooltipContent = `
@@ -545,85 +543,85 @@ function drawCategoriesChart(data, displayMode) {
               <div>
                 Année: <strong>${d.year}</strong>
               </div>
-            `;
+            `
 
           if (displayMode === 'absolute') {
-            tooltipContent += `<div>Nombre: <strong>${d.value}</strong></div>`;
+            tooltipContent += `<div>Nombre: <strong>${d.value}</strong></div>`
           } else if (displayMode === 'percentage') {
-            tooltipContent += `<div>Pourcentage: <strong>${d.value.toFixed(1)}%</strong></div>`;
+            tooltipContent += `<div>Pourcentage: <strong>${d.value.toFixed(1)}%</strong></div>`
           } else if (displayMode === 'growth') {
-            tooltipContent += `<div>Croissance: <strong>${d.value.toFixed(1)}%</strong></div>`;
+            tooltipContent += `<div>Croissance: <strong>${d.value.toFixed(1)}%</strong></div>`
           }
 
           // Afficher l'infobulle
           tooltip.transition()
             .duration(200)
-            .style('opacity', 0.9);
+            .style('opacity', 0.9)
 
           tooltip.html(tooltipContent)
             .style('left', (event.pageX + 10) + 'px')
-            .style('top', (event.pageY - 28) + 'px');
+            .style('top', (event.pageY - 28) + 'px')
         })
         .on('mouseout', function () {
           // Restaurer le point normal
           d3.select(this)
             .transition()
             .duration(200)
-            .attr('r', 5);
+            .attr('r', 5)
 
           // Masquer l'infobulle
           tooltip.transition()
             .duration(500)
-            .style('opacity', 0);
-        });
+            .style('opacity', 0)
+        })
     }
-  });
+  })
 
   // Créer la légende
-  createCategoriesLegend(data.series, colorScale);
+  createCategoriesLegend(data.series, colorScale)
 }
 
 /**
  * Crée la légende pour le graphique d'évolution des catégories
- * 
- * @param {Array} series Les séries de données 
+ *
+ * @param {Array} series Les séries de données
  * @param {Function} colorScale L'échelle de couleur utilisée
  */
-function createCategoriesLegend(series, colorScale) {
-  const legendContainer = document.querySelector('.categories-legend');
-  legendContainer.innerHTML = '';
+function createCategoriesLegend (series, colorScale) {
+  const legendContainer = document.querySelector('.categories-legend')
+  legendContainer.innerHTML = ''
 
   // Trier les séries par ordre alphabétique de catégorie pour la légende
-  const sortedSeries = [...series].sort((a, b) => a.category.localeCompare(b.category));
+  const sortedSeries = [...series].sort((a, b) => a.category.localeCompare(b.category))
 
   sortedSeries.forEach(serie => {
     // Vérifier si la série a des valeurs non nulles
     if (serie.values.some(v => v.value !== 0)) {
-      const legendItem = document.createElement('div');
-      legendItem.className = 'legend-item';
+      const legendItem = document.createElement('div')
+      legendItem.className = 'legend-item'
 
-      const colorBox = document.createElement('div');
-      colorBox.className = 'legend-color';
-      colorBox.style.backgroundColor = colorScale(serie.category);
+      const colorBox = document.createElement('div')
+      colorBox.className = 'legend-color'
+      colorBox.style.backgroundColor = colorScale(serie.category)
 
-      const label = document.createElement('span');
-      label.className = 'legend-label';
-      label.textContent = formatCategoryName(serie.category);
+      const label = document.createElement('span')
+      label.className = 'legend-label'
+      label.textContent = formatCategoryName(serie.category)
 
-      legendItem.appendChild(colorBox);
-      legendItem.appendChild(label);
-      legendContainer.appendChild(legendItem);
+      legendItem.appendChild(colorBox)
+      legendItem.appendChild(label)
+      legendContainer.appendChild(legendItem)
     }
-  });
+  })
 }
 
 /**
  * Formate le nom d'une catégorie pour l'affichage
- * 
+ *
  * @param {string} category La catégorie à formater
  * @returns {string} Le nom formaté
  */
-function formatCategoryName(category) {
-  if (!category) return 'Non spécifié';
-  return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+function formatCategoryName (category) {
+  if (!category) return 'Non spécifié'
+  return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()
 }
