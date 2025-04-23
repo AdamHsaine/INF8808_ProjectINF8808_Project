@@ -55,7 +55,7 @@ function createNeighborhoodEvolution (crimeData, container) {
           <select id="sort-method">
             <option value="absolute-change">Changement absolu</option>
             <option value="percent-change">Changement en pourcentage</option>
-            <option value="alphabetical">Alphabétique</option>
+            <option value="alphabetical">Tri des PDQ dans l'ordre croissant</option>
           </select>
         </div>
         <button id="apply-neighborhood-filters" class="apply-button">Appliquer</button>
