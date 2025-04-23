@@ -9,7 +9,13 @@
  * @param {Array} crimeData Les données des crimes
  * @param {object} container Le conteneur où placer la visualisation
  */
-export function createCrimeCorrelationAnalysis(crimeData, container) {
+/**
+ * Crée une visualisation d'analyse des corrélations temporelles des crimes
+ *
+ * @param {Array} crimeData Les données des crimes
+ * @param {object} container Le conteneur où placer la visualisation
+ */
+export function createCrimeCorrelationAnalysis (crimeData, container) {
   // Créer un conteneur pour la visualisation
   const analysisDiv = document.createElement('div')
   analysisDiv.className = 'crime-correlation-container'
@@ -26,6 +32,13 @@ export function createCrimeCorrelationAnalysis(crimeData, container) {
           <option value="day">Moment de la journée</option>
           <option value="month">Mois de l'année</option>
           <option value="weekday">Jour de la semaine</option>
+        </select>
+      </div>
+      <!-- Nouveau sélecteur pour l'année -->
+      <div class="control-group">
+        <label for="correlation-year">Année d'analyse:</label>
+        <select id="correlation-year">
+          <!-- Les années seront ajoutées dynamiquement -->
         </select>
       </div>
       <button id="apply-correlation-controls" class="apply-button">Appliquer</button>
@@ -50,6 +63,9 @@ export function createCrimeCorrelationAnalysis(crimeData, container) {
   // Ajouter les styles pour la visualisation
   addCorrelationAnalysisStyles()
 
+  // Remplir le sélecteur d'années
+  populateYearSelector(crimeData)
+
   // Gestionnaire d'événement pour les contrôles
   document.getElementById('apply-correlation-controls').addEventListener('click', function () {
     updateCorrelationAnalysis(crimeData)
@@ -60,9 +76,33 @@ export function createCrimeCorrelationAnalysis(crimeData, container) {
 }
 
 /**
-* Ajoute les styles CSS pour l'analyse de corrélation
-*/
-function addCorrelationAnalysisStyles() {
+ * Remplir le sélecteur d'années avec les années disponibles dans les données
+ *
+ * @param {Array} crimeData Les données des crimes
+ */
+function populateYearSelector (crimeData) {
+  const yearSelector = document.getElementById('correlation-year')
+
+  // Extraire les années uniques des données, et exclure l'année 2014
+  const years = [...new Set(crimeData.map(crime => new Date(crime.DATE).getFullYear()))]
+    .filter(year => year !== 2014) // Exclure l'année 2014
+
+  // Trier les années par ordre croissant
+  years.sort((a, b) => a - b)
+
+  // Ajouter les années triées au sélecteur
+  years.forEach(year => {
+    const option = document.createElement('option')
+    option.value = year
+    option.textContent = year
+    yearSelector.appendChild(option)
+  })
+}
+
+/**
+ * Ajoute les styles CSS pour l'analyse de corrélation
+ */
+function addCorrelationAnalysisStyles () {
   // Vérifier si les styles existent déjà
   if (document.getElementById('crime-correlation-styles')) return
 
@@ -254,16 +294,27 @@ function addCorrelationAnalysisStyles() {
 }
 
 /**
-* Met à jour l'analyse de corrélation en fonction des contrôles sélectionnés
-*
-* @param {Array} crimeData Les données des crimes
-*/
-function updateCorrelationAnalysis(crimeData) {
+ * Met à jour l'analyse de corrélation en fonction des contrôles sélectionnés
+ *
+ * @param {Array} crimeData Les données des crimes
+ */
+function updateCorrelationAnalysis (crimeData) {
   // Récupérer les valeurs des contrôles
   const periodType = document.getElementById('correlation-period').value
+  const selectedYear = document.getElementById('correlation-year').value
+
+  // Filtrer les données pour l'année sélectionnée
+  const filteredData = crimeData.filter(crime => {
+    const crimeYear = new Date(crime.DATE).getFullYear()
+    return crimeYear === parseInt(selectedYear) // Filtrer par l'année sélectionnée
+  })
 
   // Traiter les données pour l'analyse - Utiliser 'all' comme valeur par défaut
-  const processedData = processDataForCorrelationAnalysis(crimeData, periodType, 'all')
+  const processedData = processDataForCorrelationAnalysis(filteredData, periodType, 'all')
+
+  // Effacer l'ancien graphique et redessiner
+  d3.select('#correlation-heatmap').selectAll('*').remove()
+  d3.select('#period-distribution-chart').selectAll('*').remove()
 
   // Créer la heatmap de corrélation
   createCorrelationHeatmap(processedData, periodType)
@@ -276,14 +327,14 @@ function updateCorrelationAnalysis(crimeData) {
 }
 
 /**
-* Traite les données pour l'analyse de corrélation
-*
-* @param {Array} crimeData Les données brutes des crimes
-* @param {string} periodType Le type de période d'analyse
-* @param {string} categoryCount Le nombre de catégories à inclure
-* @returns {object} Les données traitées pour l'analyse
-*/
-function processDataForCorrelationAnalysis(crimeData, periodType, categoryCount) {
+ * Traite les données pour l'analyse de corrélation
+ *
+ * @param {Array} crimeData Les données brutes des crimes
+ * @param {string} periodType Le type de période d'analyse
+ * @param {string} categoryCount Le nombre de catégories à inclure
+ * @returns {object} Les données traitées pour l'analyse
+ */
+function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount) {
   // Filtrer les données avec date valide
   const validData = crimeData.filter(crime => crime.DATE && crime.CATEGORIE)
 
@@ -380,13 +431,13 @@ function processDataForCorrelationAnalysis(crimeData, periodType, categoryCount)
 }
 
 /**
-* Extrait les périodes pertinentes selon le type d'analyse
-*
-* @param {Array} data Les données filtrées
-* @param {string} periodType Le type de période d'analyse
-* @returns {Array} Les périodes disponibles
-*/
-function extractPeriods(data, periodType) {
+ * Extrait les périodes pertinentes selon le type d'analyse
+ *
+ * @param {Array} data Les données filtrées
+ * @param {string} periodType Le type de période d'analyse
+ * @returns {Array} Les périodes disponibles
+ */
+function extractPeriods (data, periodType) {
   if (periodType === 'day') {
     // Périodes de la journée (en utilisant le champ QUART)
     return ['jour', 'soir', 'nuit']
@@ -402,14 +453,14 @@ function extractPeriods(data, periodType) {
 }
 
 /**
-* Obtient la période correspondante pour un crime
-*
-* @param {string} date La date du crime
-* @param {string} quart Le quart de travail (pour période de la journée)
-* @param {string} periodType Le type de période d'analyse
-* @returns {string} La période correspondante
-*/
-function getPeriod(date, quart, periodType) {
+ * Obtient la période correspondante pour un crime
+ *
+ * @param {string} date La date du crime
+ * @param {string} quart Le quart de travail (pour période de la journée)
+ * @param {string} periodType Le type de période d'analyse
+ * @returns {string} La période correspondante
+ */
+function getPeriod (date, quart, periodType) {
   const d = new Date(date)
 
   if (periodType === 'day') {
@@ -428,12 +479,12 @@ function getPeriod(date, quart, periodType) {
 }
 
 /**
-* Crée une heatmap de corrélation entre catégories de crimes et périodes
-*
-* @param {object} data Les données traitées
-* @param {string} periodType Le type de période d'analyse
-*/
-function createCorrelationHeatmap(data, periodType) {
+ * Crée une heatmap de corrélation entre catégories de crimes et périodes
+ *
+ * @param {object} data Les données traitées
+ * @param {string} periodType Le type de période d'analyse
+ */
+function createCorrelationHeatmap (data, periodType) {
   // Sélectionner et vider le SVG
   const svg = d3.select('#correlation-heatmap')
   svg.selectAll('*').remove()
@@ -460,14 +511,20 @@ function createCorrelationHeatmap(data, periodType) {
 
   // Échelle de couleur divergente pour les écarts (rouge = au-dessus de l'attendu, bleu = en-dessous)
   const colorScale = d3.scaleSequential()
-    .domain([-50, 50])
-    .interpolator(d3.interpolateRdBu)
+    .domain([-10, 10])
+    .interpolator(d3.interpolateRdYlGn)
 
-  // Fonction pour déterminer la couleur selon l'écart
   /**
-   * @param deviation
+   * Détermine la couleur en fonction de l'écart (deviation).
+   * La couleur est choisie en fonction de l'écart avec une échelle de couleurs inverse :
+   * - Rouge pour les valeurs positives (écarts positifs).
+   * - Bleu pour les valeurs négatives (écarts négatifs).
+   *
+   * @param {number} deviation L'écart à partir duquel la couleur doit être déterminée.
+   *        Un écart positif donnera une couleur rouge, et un écart négatif donnera une couleur bleue.
+   * @returns {string} La couleur correspondante selon l'écart (exprimée en couleur hexadécimale ou en format CSS).
    */
-  function getColor(deviation) {
+  function getColor (deviation) {
     return colorScale(-deviation) // Inverser pour que rouge = positif, bleu = négatif
   }
 
@@ -622,12 +679,12 @@ function createCorrelationHeatmap(data, periodType) {
 }
 
 /**
-* Crée un graphique de distribution des crimes par période
-*
-* @param {object} data Les données traitées
-* @param {string} periodType Le type de période d'analyse
-*/
-function createPeriodDistributionChart(data, periodType) {
+ * Crée un graphique de distribution des crimes par période
+ *
+ * @param {object} data Les données traitées
+ * @param {string} periodType Le type de période d'analyse
+ */
+function createPeriodDistributionChart (data, periodType) {
   // Sélectionner et vider le SVG
   const svg = d3.select('#period-distribution-chart')
   svg.selectAll('*').remove()
@@ -744,12 +801,12 @@ function createPeriodDistributionChart(data, periodType) {
 }
 
 /**
-* Génère des insights basés sur l'analyse des corrélations
-*
-* @param {object} data Les données traitées
-* @param {string} periodType Le type de période d'analyse
-*/
-function generateCorrelationInsights(data, periodType) {
+ * Génère des insights basés sur l'analyse des corrélations
+ *
+ * @param {object} data Les données traitées
+ * @param {string} periodType Le type de période d'analyse
+ */
+function generateCorrelationInsights (data, periodType) {
   const insightsContainer = document.querySelector('.insights-content')
   insightsContainer.innerHTML = ''
 
@@ -819,13 +876,13 @@ représentant seulement ${lowPeriod.percentage.toFixed(1)}% de tous les crimes.
 }
 
 /**
-* Trouve les corrélations les plus fortes (positives ou négatives)
-*
-* @param {object} data Les données traitées
-* @param {boolean} positive Rechercher les corrélations positives (true) ou négatives (false)
-* @returns {Array} Les corrélations les plus fortes
-*/
-function findStrongCorrelations(data, positive) {
+ * Trouve les corrélations les plus fortes (positives ou négatives)
+ *
+ * @param {object} data Les données traitées
+ * @param {boolean} positive Rechercher les corrélations positives (true) ou négatives (false)
+ * @returns {Array} Les corrélations les plus fortes
+ */
+function findStrongCorrelations (data, positive) {
   const correlations = []
 
   data.selectedCategories.forEach(category => {
@@ -856,12 +913,12 @@ function findStrongCorrelations(data, positive) {
 }
 
 /**
-* Trouve la période avec le plus de crimes
-*
-* @param {object} data Les données traitées
-* @returns {object} Informations sur la période de pointe
-*/
-function findPeakPeriod(data) {
+ * Trouve la période avec le plus de crimes
+ *
+ * @param {object} data Les données traitées
+ * @returns {object} Informations sur la période de pointe
+ */
+function findPeakPeriod (data) {
   // Trouver la période avec le plus grand nombre de crimes
   let maxCount = 0
   let peakPeriod = null
@@ -899,12 +956,12 @@ function findPeakPeriod(data) {
 }
 
 /**
-* Trouve la période avec le moins de crimes
-*
-* @param {object} data Les données traitées
-* @returns {object} Informations sur la période creuse
-*/
-function findLowPeriod(data) {
+ * Trouve la période avec le moins de crimes
+ *
+ * @param {object} data Les données traitées
+ * @returns {object} Informations sur la période creuse
+ */
+function findLowPeriod (data) {
   // Trouver la période avec le plus petit nombre de crimes
   let minCount = Infinity
   let lowPeriod = null
@@ -927,14 +984,14 @@ function findLowPeriod(data) {
 }
 
 /**
-* Formate une période en fonction du type
-*
-* @param {string} period La période
-* @param {string} periodType Le type de période
-* @param {boolean} capitalize Mettre la première lettre en majuscule
-* @returns {string} La période formatée
-*/
-function formatPeriodWithType(period, periodType, capitalize = false) {
+ * Formate une période en fonction du type
+ *
+ * @param {string} period La période
+ * @param {string} periodType Le type de période
+ * @param {boolean} capitalize Mettre la première lettre en majuscule
+ * @returns {string} La période formatée
+ */
+function formatPeriodWithType (period, periodType, capitalize = false) {
   let result = ''
 
   if (periodType === 'day') {
@@ -965,13 +1022,13 @@ function formatPeriodWithType(period, periodType, capitalize = false) {
 }
 
 /**
-* Affiche une infobulle pour une cellule de la heatmap
-*
-* @param {Event} event L'événement de souris
-* @param {object} data Les données de la cellule
-* @param {string} periodType Le type de période
-*/
-function displayPeriodTooltip(event, data, periodType) {
+ * Affiche une infobulle pour une cellule de la heatmap
+ *
+ * @param {Event} event L'événement de souris
+ * @param {object} data Les données de la cellule
+ * @param {string} periodType Le type de période
+ */
+function displayPeriodTooltip (event, data, periodType) {
   // Créer l'infobulle si elle n'existe pas
   if (!d3.select('.correlation-tooltip').size()) {
     d3.select('body').append('div')
@@ -1004,9 +1061,9 @@ ${formattedPeriod}
 }
 
 /**
-* Cache l'infobulle de corrélation
-*/
-function hideCorrelationTooltip() {
+ * Cache l'infobulle de corrélation
+ */
+function hideCorrelationTooltip () {
   d3.select('.correlation-tooltip')
     .transition()
     .duration(500)
@@ -1014,13 +1071,13 @@ function hideCorrelationTooltip() {
 }
 
 /**
-* Obtient le libellé de la période
-*
-* @param {string} period La période
-* @param {string} periodType Le type de période
-* @returns {string} Le libellé formaté
-*/
-function getPeriodLabel(period, periodType) {
+ * Obtient le libellé de la période
+ *
+ * @param {string} period La période
+ * @param {string} periodType Le type de période
+ * @returns {string} Le libellé formaté
+ */
+function getPeriodLabel (period, periodType) {
   if (periodType === 'day') {
     const dayLabels = {
       jour: 'Journée (8h-16h)',
@@ -1044,12 +1101,12 @@ function getPeriodLabel(period, periodType) {
 }
 
 /**
-* Obtient le libellé du type de période
-*
-* @param {string} periodType Le type de période
-* @returns {string} Le libellé formaté
-*/
-function getPeriodTypeLabel(periodType) {
+ * Obtient le libellé du type de période
+ *
+ * @param {string} periodType Le type de période
+ * @returns {string} Le libellé formaté
+ */
+function getPeriodTypeLabel (periodType) {
   switch (periodType) {
     case 'day':
       return 'Moment de la journée'
@@ -1063,26 +1120,27 @@ function getPeriodTypeLabel(periodType) {
 }
 
 /**
-* Formate le nom d'une catégorie pour l'affichage
-*
-* @param {string} category La catégorie à formater
-* @returns {string} Le nom formaté
-*/
-function formatCategoryName(category) {
+ * Formate le nom d'une catégorie pour l'affichage
+ *
+ * @param {string} category La catégorie à formater
+ * @returns {string} Le nom formaté
+ */
+function formatCategoryName (category) {
   if (!category) return 'Non spécifié'
   return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()
 }
-// *
-// * @param { Event } event L'événement de souris
-//     * @param { Object } data Les données de la cellule
-//         * @param { string } periodType Le type de période
-// */
+
 /**
-* @param event
-* @param data
-* @param periodType
-*/
-function displayCorrelationTooltip(event, data, periodType) {
+ * Affiche une infobulle avec les détails de la corrélation pour une période et une catégorie données.
+ * L'infobulle affiche les informations suivantes : la période, le nombre de crimes observé, le nombre de crimes attendu,
+ * l'écart en pourcentage et le type de déviation (sur-représentation ou sous-représentation).
+ * L'infobulle est affichée au survol d'un élément du graphique.
+ *
+ * @param {Event} event L'événement de souris (contenant les coordonnées de la souris pour positionner l'infobulle).
+ * @param {object} data Les données associées à l'élément survolé, contenant les informations de corrélation (comme la catégorie, l'écart, le nombre observé et attendu).
+ * @param {string} periodType Le type de période, utilisé pour formater l'étiquette de la période (ex: "mois", "année").
+ */
+function displayCorrelationTooltip (event, data, periodType) {
   // Créer l'infobulle si elle n'existe pas
   if (!d3.select('.correlation-tooltip').size()) {
     d3.select('body').append('div')
@@ -1130,7 +1188,6 @@ ${formatCategoryName(data.category)}
     .transition()
     .duration(200)
     .style('opacity', 0.9)
-
 
   // Afficher et positionner l'infobulle
   d3.select('.correlation-tooltip')
