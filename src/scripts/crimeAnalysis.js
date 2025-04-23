@@ -13,10 +13,7 @@ export function processCrimeData (crimeData) {
   const categories = [...new Set(crimeData.map(d => d.CATEGORIE).filter(c => c))]
 
 <<<<<<< HEAD
-    // Extraire les années uniques
-    const years = [...new Set(crimeData
-        .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-        .filter(y => y !== null && y >= 2015))].sort()
+  
 =======
   // Extraire les années uniques
   const years = [...new Set(crimeData
