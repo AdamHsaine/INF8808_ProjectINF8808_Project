@@ -73,7 +73,7 @@ export function createCrimeHeatmap(crimeData, container) {
     // Extraire les années uniques des données
     const years = [...new Set(crimeData
         .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-        .filter(y => y !== null && y >= 2015))].sort();
+        .filter(y => y !== null && y >= 2015 ))].sort();
 
     // Extraire les catégories uniques de crimes
     const crimeTypes = [...new Set(crimeData.map(d => d.CATEGORIE).filter(c => c))]; 
