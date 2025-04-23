@@ -369,7 +369,7 @@ function prepareSeasonalControls(crimeData) {
   // Extraire les années uniques
   const years = [...new Set(crimeData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-    .filter(y => y !== null))].sort();
+    .filter(y => y !== null && y >= 2015))].sort();
 
   // Remplir le sélecteur de catégories
   const categorySelect = document.getElementById('seasonal-category');
