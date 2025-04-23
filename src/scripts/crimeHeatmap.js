@@ -69,8 +69,6 @@ export function createCrimeHeatmap (crimeData, container) {
 
   // Ajouter les styles pour la carte de chaleur et Leaflet
   addHeatmapStyles()
-
-=======
   // Extraire les années uniques des données
   const years = [...new Set(crimeData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
@@ -81,7 +79,7 @@ export function createCrimeHeatmap (crimeData, container) {
   console.log("text")
   // Remplir le sélecteur d'années
   const yearSelect = document.getElementById('year-filter-heatmap')
->>>>>>> 908c60a7d3e0102cf203201b877f51def6d82923
+
 
   // Option "Toutes les années"
   const allYearsOption = document.createElement('option')

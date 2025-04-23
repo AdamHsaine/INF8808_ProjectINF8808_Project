@@ -12,15 +12,11 @@ export function processCrimeData (crimeData) {
   // Extraire les catégories uniques
   const categories = [...new Set(crimeData.map(d => d.CATEGORIE).filter(c => c))]
 
-<<<<<<< HEAD
-  
-=======
   // Extraire les années uniques
   const years = [...new Set(crimeData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
     .filter(y => y !== null && y >= 2015))].sort()
->>>>>>> 908c60a7d3e0102cf203201b877f51def6d82923
-
+ 
   // Agréger les crimes par PDQ
   const byPDQ = {}
 
