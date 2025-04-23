@@ -878,62 +878,64 @@ function createSeasonalHeatmap(data) {
 
   // Ajouter l'échelle de couleur comme légende
   const legendWidth = 200;
-  const legendHeight = 15;
+  const legendHeight = 25; // Augmenter la hauteur
 
   const legendX = width - legendWidth - 20;
-  const legendY = height - 30;
+  const legendY = height - 60;
 
-  const legendScale = d3.scaleLinear()
-    .domain([0, maxCount])
-    .range([0, legendWidth]);
+  // Ajouter un titre plus visible pour la légende
+  svg.append('text')
+    .attr('x', legendX)
+    .attr('y', legendY - 15)
+    .attr('text-anchor', 'start')
+    .style('font-size', '14px')
+    .style('font-weight', 'bold')
+    .text('Intensité des crimes:');
 
-  const legendAxis = d3.axisBottom(legendScale)
-    .ticks(5)
-    .tickSize(legendHeight + 5);
+  // Créer des rectangles de couleur individuels au lieu d'un gradient
+  const numSteps = 5;
+  const stepWidth = legendWidth / numSteps;
 
-  // Créer un gradient pour la légende
-  const defs = svg.append('defs');
+  for (let i = 0; i < numSteps; i++) {
+    // Calculer la valeur que représente cette étape
+    const value = i * (maxCount / numSteps);
 
-  const gradient = defs.append('linearGradient')
-    .attr('id', 'heatmap-gradient')
-    .attr('x1', '0%')
-    .attr('x2', '100%')
-    .attr('y1', '0%')
-    .attr('y2', '0%');
+    // Créer un rectangle avec une couleur distincte
+    svg.append('rect')
+      .attr('x', legendX + i * stepWidth)
+      .attr('y', legendY)
+      .attr('width', stepWidth)
+      .attr('height', legendHeight)
+      .attr('fill', colorScale(value))
+      .attr('stroke', '#333')
+      .attr('stroke-width', 1);
 
-  // Ajouter les stops du gradient
-  const numStops = 10;
-  for (let i = 0; i < numStops; i++) {
-    const offset = i / (numStops - 1);
-    const stopValue = offset * maxCount;
-
-    gradient.append('stop')
-      .attr('offset', `${offset * 100}%`)
-      .attr('stop-color', colorScale(stopValue));
+    // Ajouter la valeur sous chaque rectangle
+    svg.append('text')
+      .attr('x', legendX + i * stepWidth + stepWidth / 2)
+      .attr('y', legendY + legendHeight + 15)
+      .attr('text-anchor', 'middle')
+      .style('font-size', '11px')
+      .style('font-weight', 'bold')
+      .text(Math.round(value));
   }
 
-  // Dessiner la barre de légende
-  svg.append('rect')
-    .attr('x', legendX)
-    .attr('y', legendY)
-    .attr('width', legendWidth)
-    .attr('height', legendHeight)
-    .style('fill', 'url(#heatmap-gradient)');
-
-  // Ajouter l'axe de la légende
-  svg.append('g')
-    .attr('transform', `translate(${legendX}, ${legendY})`)
-    .call(legendAxis)
-    .select('.domain')
-    .remove();
-
-  // Ajouter un titre pour la légende
+  // Ajouter des indicateurs textuels pour plus de clarté
   svg.append('text')
-    .attr('x', legendX + legendWidth / 2)
-    .attr('y', legendY - 10)
-    .attr('text-anchor', 'middle')
+    .attr('x', legendX)
+    .attr('y', legendY - 3)
+    .attr('text-anchor', 'start')
     .style('font-size', '12px')
-    .text('Nombre de crimes');
+    .style('font-weight', 'bold')
+    .text('Faible');
+
+  svg.append('text')
+    .attr('x', legendX + legendWidth)
+    .attr('y', legendY - 3)
+    .attr('text-anchor', 'end')
+    .style('font-size', '12px')
+    .style('font-weight', 'bold')
+    .text('Élevé');
 }
 
 /**
