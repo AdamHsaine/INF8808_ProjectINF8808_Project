@@ -4,7 +4,7 @@
  * @param {object} d The data bound to the clicked marker
  * @param {*} color The color scale used to select the title's color
  */
-export function display(d, color) {
+export function display (d, color) {
   const panel = d3.select('#panel').style('visibility', 'visible')
 
   panel.selectAll('*').remove()
@@ -54,20 +54,20 @@ export function display(d, color) {
  * @param {object} d The data to display
  * @param {*} color The color scale to select the title's color
  */
-function setTitle(g, d, color) {
+function setTitle (g, d, color) {
   // TODO : Set the title
   // Récupérer le nom du projet
-  const projectName = d.properties.NOM_PROJET || 'Projet sans nom';
+  const projectName = d.properties.NOM_PROJET || 'Projet sans nom'
 
   // Obtenir la couleur correspondante au type de site
-  const siteColor = color(d.properties.TYPE_SITE_INTERVENTION);
+  const siteColor = color(d.properties.TYPE_SITE_INTERVENTION)
 
   // Définir le titre avec la même couleur que le marqueur
   g.text(projectName)
     .style('color', siteColor)
     .style('border-bottom', `2px solid ${siteColor}`)
     .style('padding-bottom', '5px')
-    .style('margin-bottom', '10px');
+    .style('margin-bottom', '10px')
 }
 
 /**
@@ -76,14 +76,14 @@ function setTitle(g, d, color) {
  * @param {*} g The d3 selection of the SVG g element containing the mode
  * @param {object} d The data to display
  */
-function setMode(g, d) {
+function setMode (g, d) {
   // TODO : Set the mode
-  const mode = d.properties.MODE || 'Non spécifié';
+  const mode = d.properties.MODE || 'Non spécifié'
 
   // Afficher le mode comme sous-titre
   g.text(`Mode: ${mode}`)
     .style('margin-top', '10px')
-    .style('margin-bottom', '15px');
+    .style('margin-bottom', '15px')
 }
 
 /**
@@ -93,9 +93,9 @@ function setMode(g, d) {
  * @param {*} g The d3 selection of the SVG g element containing the themes
  * @param {object} d The data to display
  */
-function setTheme(g, d) {
+function setTheme (g, d) {
   // TODO : Append a list element representing the given theme
   g.append('li')
     .text(d)
-    .style('margin-bottom', '5px');
+    .style('margin-bottom', '5px')
 }

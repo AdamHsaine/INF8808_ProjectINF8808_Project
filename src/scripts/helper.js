@@ -5,7 +5,7 @@
  * @param {number} height The height of the graph
  * @returns {*} The d3 Selection for the created g element
  */
-export function generateMapG(width, height) {
+export function generateMapG (width, height) {
   return d3.select('.graph')
     .select('svg')
     .append('g')
@@ -21,7 +21,7 @@ export function generateMapG(width, height) {
  * @param {number} height The height of the graph
  * @returns {*} The d3 Selection for the created g element
  */
-export function generateMarkerG(width, height) {
+export function generateMarkerG (width, height) {
   return d3.select('.graph')
     .select('svg')
     .append('g')
@@ -36,7 +36,7 @@ export function generateMarkerG(width, height) {
  * @param {number} width The desired width
  * @param {number} height The desired height
  */
-export function setCanvasSize(width, height) {
+export function setCanvasSize (width, height) {
   d3.select('#map').select('svg')
     .attr('width', width)
     .attr('height', height)
@@ -48,7 +48,7 @@ export function setCanvasSize(width, height) {
  * @param {*} g The d3 Selection of the graph's g SVG element
  * @param {string} title The title of the graph
  */
-export function appendGraphLabels(g, title) {
+export function appendGraphLabels (g, title) {
   g.append('text')
     .text(title || 'Carte des PDQ de Montréal')
     .attr('class', 'title')
@@ -69,7 +69,7 @@ export function appendGraphLabels(g, title) {
 /**
  * Initializes the div which will contain the information panel.
  */
-export function initPanelDiv() {
+export function initPanelDiv () {
   // Vérifier si le panneau existe déjà
   if (d3.select('#panel').size() === 0) {
     d3.select('.graph')
@@ -85,7 +85,7 @@ export function initPanelDiv() {
  * @param {object} data The data to be displayed
  * @returns {*} The generated simulation
  */
-export function getSimulation(data) {
+export function getSimulation (data) {
   return d3.forceSimulation(data.features)
     .alphaDecay(0)
     .velocityDecay(0.75)
@@ -101,7 +101,7 @@ export function getSimulation(data) {
  *
  * @param {*} simulation The simulation used to position the cirles.
  */
-export function simulate(simulation) {
+export function simulate (simulation) {
   simulation.on('tick', () => {
     d3.selectAll('.marker')
       .attr('cx', (d) => d.x)
@@ -114,11 +114,11 @@ export function simulate(simulation) {
  *
  * @returns {*} The projection to use to trace the map elements
  */
-export function getProjection() {
+export function getProjection () {
   return d3.geoMercator()
-    .center([-73.75, 45.54])   // Ajustez le centre si nécessaire
-    .scale(65000)              // Réduisez l'échelle pour "zoomer out"
-    .translate([450, 312.5]);
+    .center([-73.75, 45.54]) // Ajustez le centre si nécessaire
+    .scale(65000) // Réduisez l'échelle pour "zoomer out"
+    .translate([450, 312.5])
 }
 
 /**
@@ -127,7 +127,7 @@ export function getProjection() {
  * @param {*} projection The projection used to trace the map elements
  * @returns {*} The path to use to trace the map elements
  */
-export function getPath(projection) {
+export function getPath (projection) {
   return d3.geoPath()
     .projection(projection)
 }

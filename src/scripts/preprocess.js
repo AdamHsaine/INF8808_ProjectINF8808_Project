@@ -9,14 +9,14 @@ const TITLES = {
 }
 
 /**
- *  Uses the projection to convert longitude and latitude to xy coordinates.
+ * Utilise la projection pour convertir la longitude et la latitude en coordonnées xy.
  *
- * The keys for the coordinate are written to each feature object in the data.
+ * Les clés pour les coordonnées sont écrites dans chaque objet de fonctionnalité dans les données.
  *
- * @param {object[]} data The data to be displayed
- * @param {*} projection The projection to use to convert the longitude and latitude
+ * @param {object[]} data Les données à afficher
+ * @param {*} projection La projection à utiliser pour convertir la longitude et la latitude
  */
-export function convertCoordinates(data, projection) {
+export function convertCoordinates (data, projection) {
   // TODO : Add an x and y key to each feature object in the data
   // representing its x and y position according to the projection.
   // Each resulting object should be structured as :
@@ -30,115 +30,109 @@ export function convertCoordinates(data, projection) {
       y:...
     }
   */
-  console.log("Converting coordinates for", data.features.length, "features");
+  console.log('Converting coordinates for', data.features.length, 'features')
 
   // Parcours de chaque caractéristique dans les données
   data.features.forEach((feature, index) => {
     try {
       // Les données GeoJSON peuvent avoir différents types de géométrie
       if (!feature.geometry) {
-        console.warn(`Feature ${index} has no geometry`);
-        return;
+        console.warn(`Feature ${index} has no geometry`)
+        return
       }
 
       if (feature.geometry.type === 'Point') {
         // Pour les points, les coordonnées sont simplement [longitude, latitude]
-        const projectedCoords = projection(feature.geometry.coordinates);
+        const projectedCoords = projection(feature.geometry.coordinates)
         if (projectedCoords) {
-          feature.x = projectedCoords[0];
-          feature.y = projectedCoords[1];
+          feature.x = projectedCoords[0]
+          feature.y = projectedCoords[1]
         } else {
-          console.warn(`Failed to project Point coordinates for feature ${index}`);
+          console.warn(`Failed to project Point coordinates for feature ${index}`)
         }
-      }
-      else if (feature.geometry.type === 'LineString' ||
+      } else if (feature.geometry.type === 'LineString' ||
         feature.geometry.type === 'MultiPoint') {
         // Pour les lignes ou multi-points, nous calculons le centroïde
         // (moyenne des coordonnées pour simplifier)
         if (feature.geometry.coordinates.length > 0) {
-          let sumX = 0, sumY = 0;
-          let validPoints = 0;
+          let sumX = 0; let sumY = 0
+          let validPoints = 0
 
           feature.geometry.coordinates.forEach(coord => {
-            const projectedCoord = projection(coord);
+            const projectedCoord = projection(coord)
             if (projectedCoord) {
-              sumX += projectedCoord[0];
-              sumY += projectedCoord[1];
-              validPoints++;
+              sumX += projectedCoord[0]
+              sumY += projectedCoord[1]
+              validPoints++
             }
-          });
+          })
 
           if (validPoints > 0) {
-            feature.x = sumX / validPoints;
-            feature.y = sumY / validPoints;
+            feature.x = sumX / validPoints
+            feature.y = sumY / validPoints
           } else {
-            console.warn(`No valid coordinates for LineString/MultiPoint feature ${index}`);
+            console.warn(`No valid coordinates for LineString/MultiPoint feature ${index}`)
           }
         }
-      }
-      else if (feature.geometry.type === 'Polygon' ||
+      } else if (feature.geometry.type === 'Polygon' ||
         feature.geometry.type === 'MultiLineString') {
         // Pour les polygones, nous prenons le centroïde du premier anneau
         if (feature.geometry.coordinates.length > 0 &&
           feature.geometry.coordinates[0].length > 0) {
-
-          let sumX = 0, sumY = 0;
-          let validPoints = 0;
+          let sumX = 0; let sumY = 0
+          let validPoints = 0
 
           feature.geometry.coordinates[0].forEach(coord => {
-            const projectedCoord = projection(coord);
+            const projectedCoord = projection(coord)
             if (projectedCoord) {
-              sumX += projectedCoord[0];
-              sumY += projectedCoord[1];
-              validPoints++;
+              sumX += projectedCoord[0]
+              sumY += projectedCoord[1]
+              validPoints++
             }
-          });
+          })
 
           if (validPoints > 0) {
-            feature.x = sumX / validPoints;
-            feature.y = sumY / validPoints;
+            feature.x = sumX / validPoints
+            feature.y = sumY / validPoints
           } else {
             // Fallback au premier point si aucun point valide
-            const projectedCoord = projection(feature.geometry.coordinates[0][0]);
+            const projectedCoord = projection(feature.geometry.coordinates[0][0])
             if (projectedCoord) {
-              feature.x = projectedCoord[0];
-              feature.y = projectedCoord[1];
+              feature.x = projectedCoord[0]
+              feature.y = projectedCoord[1]
             } else {
-              console.warn(`No valid coordinates for Polygon/MultiLineString feature ${index}`);
+              console.warn(`No valid coordinates for Polygon/MultiLineString feature ${index}`)
             }
           }
         }
-      }
-      else if (feature.geometry.type === 'MultiPolygon') {
+      } else if (feature.geometry.type === 'MultiPolygon') {
         // Pour les multi-polygones, nous prenons le premier point du premier anneau du premier polygone
         if (feature.geometry.coordinates.length > 0 &&
           feature.geometry.coordinates[0].length > 0 &&
           feature.geometry.coordinates[0][0].length > 0) {
-
-          const projectedCoord = projection(feature.geometry.coordinates[0][0][0]);
+          const projectedCoord = projection(feature.geometry.coordinates[0][0][0])
           if (projectedCoord) {
-            feature.x = projectedCoord[0];
-            feature.y = projectedCoord[1];
+            feature.x = projectedCoord[0]
+            feature.y = projectedCoord[1]
           } else {
-            console.warn(`Failed to project MultiPolygon coordinates for feature ${index}`);
+            console.warn(`Failed to project MultiPolygon coordinates for feature ${index}`)
           }
         }
-      }
-      else {
-        console.warn(`Type de géométrie non pris en charge: ${feature.geometry.type} pour feature ${index}`);
+      } else {
+        console.warn(`Type de géométrie non pris en charge: ${feature.geometry.type} pour feature ${index}`)
       }
 
       // Vérifier si les coordonnées x, y sont valides
       if (feature.x === undefined || feature.y === undefined ||
         isNaN(feature.x) || isNaN(feature.y)) {
-        console.warn(`Invalid coordinates for feature ${index}: (${feature.x}, ${feature.y})`);
+        console.warn(`Invalid coordinates for feature ${index}: (${feature.x}, ${feature.y})`)
       }
     } catch (error) {
-      console.error(`Error processing feature ${index}:`, error);
+      console.error(`Error processing feature ${index}:`, error)
     }
-  });
+  })
 
-  console.log("Coordinate conversion complete");
+  console.log('Coordinate conversion complete')
 }
 
 /**
@@ -147,76 +141,92 @@ export function convertCoordinates(data, projection) {
  *
  * @param {*} data The data to be displayed
  */
-export function simplifyDisplayTitles(data) {
+export function simplifyDisplayTitles (data) {
   // TODO : Simplify the titles as required
   data.features.forEach(feature => {
     // Récupération du titre actuel
-    const currentTitle = feature.properties.TYPE_SITE_INTERVENTION;
+    const currentTitle = feature.properties.TYPE_SITE_INTERVENTION
 
     // Remplacement par le titre simplifié s'il existe dans le dictionnaire TITLES
     if (currentTitle && TITLES[currentTitle]) {
-      feature.properties.TYPE_SITE_INTERVENTION = TITLES[currentTitle];
+      feature.properties.TYPE_SITE_INTERVENTION = TITLES[currentTitle]
     }
-  });
+  })
 }
 
 /**
  * Reverses the coordinates in the GeoJson data using turf's rewind function.
  * See here : https://turfjs.org/docs/#rewind
- * @param {*} data The data to be displayed
+ *
+ * @param {*} data The dxata to be displayed
  * @returns {*} The GeoJson data with reversed coordinates.
  */
-export function reverseGeoJsonCoordinates(data) {
+export function reverseGeoJsonCoordinates (data) {
   // TODO : Rewind the GeoJso data.
-  console.log("Inversion des coordonnées GeoJSON");
+  console.log('Inversion des coordonnées GeoJSON')
 
   // Vérifier si turf est disponible
   if (typeof turf !== 'undefined' && typeof turf.rewind === 'function') {
-    console.log("Using turf.js rewind function");
-    return turf.rewind(data, { reverse: true, mutate: false });
+    console.log('Using turf.js rewind function')
+    return turf.rewind(data, { reverse: true, mutate: false })
   }
 
-  console.log("Using manual coordinate reversal");
+  console.log('Using manual coordinate reversal')
 
+  /**
+   * Inverse les coordonnées dans un MultiPolygon (tableau de polygones).
+   * Chaque polygone est un tableau d'anneaux, et chaque anneau est un tableau de points.
+   * Les coordonnées des points sont inversées de [lon, lat] à [lat, lon].
+   *
+   * @param {Array} multiPolygon Le MultiPolygon à traiter, composé de polygones et d'anneaux avec des points sous forme de coordonnées [lon, lat]
+   * @returns {Array} Le MultiPolygon avec les coordonnées inversées, où chaque point est maintenant [lat, lon]
+   */
   // Fonction récursive spécifique pour inverser les coordonnées dans MultiPolygon
-  function reverseMultiPolygonCoords(multiPolygon) {
+  function reverseMultiPolygonCoords (multiPolygon) {
     // Pour chaque polygone dans le multiPolygon
     return multiPolygon.map(polygon => {
       // Pour chaque anneau dans le polygone
       return polygon.map(ring => {
         // Pour chaque point [lon, lat] dans l'anneau, inverser en [lat, lon]
-        return ring.map(point => [point[1], point[0]]);
-      });
-    });
+        return ring.map(point => [point[1], point[0]])
+      })
+    })
   }
 
-  // Fonction récursive générale pour inverser tous types de coordonnées
-  function reverseCoords(coords) {
-    if (!coords || !Array.isArray(coords)) return coords;
+  /**
+   * Inverse les coordonnées géographiques d'un tableau (ou tableau imbriqué) de coordonnées.
+   * Les coordonnées de type [lon, lat] sont inversées en [lat, lon] de manière récursive,
+   * que ce soit une paire simple de coordonnées ou un tableau de tableaux imbriqués.
+   *
+   * @param {Array} coords Les coordonnées à inverser, qui peuvent être une paire de coordonnées [lon, lat] ou un tableau de tableaux
+   * @returns {Array} Les coordonnées inversées, avec chaque paire de coordonnées sous forme de [lat, lon]
+   */
+  function reverseCoords (coords) {
+    if (!coords || !Array.isArray(coords)) return coords
 
     // Cas simple: une paire de coordonnées [lon, lat]
     if (coords.length === 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
-      return [coords[1], coords[0]];
+      return [coords[1], coords[0]]
     }
 
     // Cas récursif: tableau de tableaux
-    return coords.map(coord => reverseCoords(coord));
+    return coords.map(coord => reverseCoords(coord))
   }
 
   // Copie profonde des données
-  const rewoundData = JSON.parse(JSON.stringify(data));
+  const rewoundData = JSON.parse(JSON.stringify(data))
 
   // Parcourir toutes les features
   rewoundData.features.forEach(feature => {
-    if (!feature.geometry || !feature.geometry.coordinates) return;
+    if (!feature.geometry || !feature.geometry.coordinates) return
 
     // Traitement différent selon le type de géométrie
     if (feature.geometry.type === 'MultiPolygon') {
-      feature.geometry.coordinates = reverseMultiPolygonCoords(feature.geometry.coordinates);
+      feature.geometry.coordinates = reverseMultiPolygonCoords(feature.geometry.coordinates)
     } else {
-      feature.geometry.coordinates = reverseCoords(feature.geometry.coordinates);
+      feature.geometry.coordinates = reverseCoords(feature.geometry.coordinates)
     }
-  });
+  })
 
-  return rewoundData;
+  return rewoundData
 }

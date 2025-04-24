@@ -5,16 +5,16 @@
 
 /**
  * Crée une visualisation de l'impact des saisons sur les types de crimes
- * 
+ *
  * @param {Array} crimeData Les données des crimes
- * @param {Object} container Le conteneur où placer la visualisation
+ * @param {object} container Le conteneur où placer la visualisation
  */
-export function createSeasonalImpactAnalysis(crimeData, container) {
-  console.log("Création de l'analyse d'impact saisonnier...");
+export function createSeasonalImpactAnalysis (crimeData, container) {
+  console.log("Création de l'analyse d'impact saisonnier...")
 
   // Créer un conteneur pour la visualisation
-  const analysisDiv = document.createElement('div');
-  analysisDiv.className = 'seasonal-impact-container';
+  const analysisDiv = document.createElement('div')
+  analysisDiv.className = 'seasonal-impact-container'
   analysisDiv.innerHTML = `
     <h2>Impact des saisons sur les types de crimes</h2>
     <div class="analysis-description">
@@ -54,74 +54,74 @@ export function createSeasonalImpactAnalysis(crimeData, container) {
       <h3>Résumé saisonnier</h3>
       <div class="seasonal-cards"></div>
     </div>
-  `;
+  `
 
-  container.appendChild(analysisDiv);
+  container.appendChild(analysisDiv)
 
   // Ajouter les styles pour la visualisation
-  addSeasonalAnalysisStyles();
+  addSeasonalAnalysisStyles()
 
   // Extraire les catégories et années uniques
-  prepareSeasonalControls(crimeData);
+  prepareSeasonalControls(crimeData)
 
   // Gestionnaire d'événement pour les contrôles
   document.getElementById('apply-seasonal-controls').addEventListener('click', function () {
-    updateSeasonalAnalysis(crimeData);
-  });
+    updateSeasonalAnalysis(crimeData)
+  })
 
   // Initialiser la visualisation après un court délai
-  initializeSeasonalVisualization(crimeData);
+  initializeSeasonalVisualization(crimeData)
 
-  console.log("Analyse d'impact saisonnier créée");
+  console.log("Analyse d'impact saisonnier créée")
 }
 
 /**
-* Initialise explicitement la visualisation avec la carte de chaleur
-* 
-* @param {Array} crimeData Les données des crimes
-*/
-function initializeSeasonalVisualization(crimeData) {
+ * Initialise explicitement la visualisation avec la carte de chaleur
+ *
+ * @param {Array} crimeData Les données des crimes
+ */
+function initializeSeasonalVisualization (crimeData) {
   // S'assurer que tous les éléments du DOM sont bien chargés
   setTimeout(() => {
     try {
       // Vérifier que les éléments existent
-      const viewTypeSelect = document.getElementById('seasonal-view-type');
-      const categorySelect = document.getElementById('seasonal-category');
-      const yearSelect = document.getElementById('seasonal-year');
+      const viewTypeSelect = document.getElementById('seasonal-view-type')
+      const categorySelect = document.getElementById('seasonal-category')
+      const yearSelect = document.getElementById('seasonal-year')
 
       if (viewTypeSelect && categorySelect && yearSelect) {
         // Définir les valeurs par défaut
-        viewTypeSelect.value = 'heatmap';
-        categorySelect.value = 'all';
-        yearSelect.value = 'all';
+        viewTypeSelect.value = 'heatmap'
+        categorySelect.value = 'all'
+        yearSelect.value = 'all'
 
-        console.log("Initialisation de la visualisation saisonnière...");
+        console.log('Initialisation de la visualisation saisonnière...')
 
         // Créer la visualisation initiale
-        const seasonalData = processDataForSeasonalAnalysis(crimeData, 'all', 'all');
-        createSeasonalHeatmap(seasonalData);
-        generateSeasonalInsights(seasonalData);
-        displaySeasonalSummary(seasonalData);
+        const seasonalData = processDataForSeasonalAnalysis(crimeData, 'all', 'all')
+        createSeasonalHeatmap(seasonalData)
+        generateSeasonalInsights(seasonalData)
+        displaySeasonalSummary(seasonalData)
 
-        console.log("Visualisation saisonnière initialisée avec succès");
+        console.log('Visualisation saisonnière initialisée avec succès')
       } else {
-        console.error("Certains éléments de la visualisation saisonnière n'ont pas été trouvés");
+        console.error("Certains éléments de la visualisation saisonnière n'ont pas été trouvés")
       }
     } catch (error) {
-      console.error("Erreur lors de l'initialisation de la visualisation saisonnière:", error);
+      console.error("Erreur lors de l'initialisation de la visualisation saisonnière:", error)
     }
-  }, 500); // Délai pour s'assurer que le DOM est chargé
+  }, 500) // Délai pour s'assurer que le DOM est chargé
 }
 
 /**
-* Ajoute les styles CSS pour l'analyse saisonnière
-*/
-function addSeasonalAnalysisStyles() {
+ * Ajoute les styles CSS pour l'analyse saisonnière
+ */
+function addSeasonalAnalysisStyles () {
   // Vérifier si les styles existent déjà
-  if (document.getElementById('seasonal-analysis-styles')) return;
+  if (document.getElementById('seasonal-analysis-styles')) return
 
-  const style = document.createElement('style');
-  style.id = 'seasonal-analysis-styles';
+  const style = document.createElement('style')
+  style.id = 'seasonal-analysis-styles'
   style.textContent = `
     .seasonal-impact-container {
       padding: 20px;
@@ -350,181 +350,181 @@ function addSeasonalAnalysisStyles() {
       margin-right: 5px;
       border-radius: 3px;
     }
-  `;
+  `
 
-  document.head.appendChild(style);
+  document.head.appendChild(style)
 }
 
 /**
-* Prépare les contrôles pour l'analyse saisonnière
-* 
-* @param {Array} crimeData Les données des crimes
-*/
-function prepareSeasonalControls(crimeData) {
+ * Prépare les contrôles pour l'analyse saisonnière
+ *
+ * @param {Array} crimeData Les données des crimes
+ */
+function prepareSeasonalControls (crimeData) {
   // Extraire les catégories uniques
   const categories = [...new Set(crimeData
     .map(d => d.CATEGORIE)
-    .filter(c => c !== null))];
+    .filter(c => c !== null))]
 
   // Extraire les années uniques
   const years = [...new Set(crimeData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-    .filter(y => y !== null && y >= 2015))].sort();
+    .filter(y => y !== null && y >= 2015))].sort()
 
   // Remplir le sélecteur de catégories
-  const categorySelect = document.getElementById('seasonal-category');
+  const categorySelect = document.getElementById('seasonal-category')
 
   // Vider les options existantes sauf "Toutes les catégories"
   while (categorySelect.options.length > 1) {
-    categorySelect.options.remove(1);
+    categorySelect.options.remove(1)
   }
 
   // Ajouter les options de catégories
   categories.forEach(category => {
-    const option = document.createElement('option');
-    option.value = category;
-    option.textContent = formatCategoryName(category);
-    categorySelect.appendChild(option);
-  });
+    const option = document.createElement('option')
+    option.value = category
+    option.textContent = formatCategoryName(category)
+    categorySelect.appendChild(option)
+  })
 
   // Remplir le sélecteur d'années
-  const yearSelect = document.getElementById('seasonal-year');
+  const yearSelect = document.getElementById('seasonal-year')
 
   // Vider les options existantes sauf "Toutes les années"
   while (yearSelect.options.length > 1) {
-    yearSelect.options.remove(1);
+    yearSelect.options.remove(1)
   }
 
   // Ajouter les options d'années
   years.forEach(year => {
-    const option = document.createElement('option');
-    option.value = year;
-    option.textContent = year;
-    yearSelect.appendChild(option);
-  });
+    const option = document.createElement('option')
+    option.value = year
+    option.textContent = year
+    yearSelect.appendChild(option)
+  })
 }
 
 /**
-* Met à jour l'analyse saisonnière en fonction des contrôles sélectionnés
-* 
-* @param {Array} crimeData Les données des crimes
-*/
-function updateSeasonalAnalysis(crimeData) {
+ * Met à jour l'analyse saisonnière en fonction des contrôles sélectionnés
+ *
+ * @param {Array} crimeData Les données des crimes
+ */
+function updateSeasonalAnalysis (crimeData) {
   try {
-    console.log("Mise à jour de l'analyse saisonnière...");
+    console.log("Mise à jour de l'analyse saisonnière...")
 
     // Récupérer les valeurs des contrôles
-    const viewTypeSelect = document.getElementById('seasonal-view-type');
-    const categorySelect = document.getElementById('seasonal-category');
-    const yearSelect = document.getElementById('seasonal-year');
+    const viewTypeSelect = document.getElementById('seasonal-view-type')
+    const categorySelect = document.getElementById('seasonal-category')
+    const yearSelect = document.getElementById('seasonal-year')
 
     if (!viewTypeSelect || !categorySelect || !yearSelect) {
-      console.error("Les contrôles de la visualisation saisonnière n'ont pas été trouvés");
-      return;
+      console.error("Les contrôles de la visualisation saisonnière n'ont pas été trouvés")
+      return
     }
 
-    const viewType = viewTypeSelect.value;
-    const categoryFilter = categorySelect.value;
-    const yearFilter = yearSelect.value;
+    const viewType = viewTypeSelect.value
+    const categoryFilter = categorySelect.value
+    const yearFilter = yearSelect.value
 
-    console.log(`Type de vue: ${viewType}, Catégorie: ${categoryFilter}, Année: ${yearFilter}`);
+    console.log(`Type de vue: ${viewType}, Catégorie: ${categoryFilter}, Année: ${yearFilter}`)
 
     // Traiter les données pour l'analyse saisonnière
-    const seasonalData = processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter);
+    const seasonalData = processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter)
 
     // Créer la visualisation appropriée
     if (viewType === 'heatmap') {
-      createSeasonalHeatmap(seasonalData);
+      createSeasonalHeatmap(seasonalData)
     } else if (viewType === 'radar') {
-      createSeasonalRadarChart(seasonalData);
+      createSeasonalRadarChart(seasonalData)
     } else if (viewType === 'line') {
-      createSeasonalLineChart(seasonalData);
+      createSeasonalLineChart(seasonalData)
     }
 
     // Générer les insights sur les tendances saisonnières
-    generateSeasonalInsights(seasonalData);
+    generateSeasonalInsights(seasonalData)
 
     // Afficher le résumé saisonnier
-    displaySeasonalSummary(seasonalData);
+    displaySeasonalSummary(seasonalData)
 
-    console.log("Analyse saisonnière mise à jour avec succès");
+    console.log('Analyse saisonnière mise à jour avec succès')
   } catch (error) {
-    console.error("Erreur lors de la mise à jour de l'analyse saisonnière:", error);
+    console.error("Erreur lors de la mise à jour de l'analyse saisonnière:", error)
   }
 }
 
 /**
-* Traite les données pour l'analyse saisonnière
-* 
-* @param {Array} crimeData Les données brutes des crimes
-* @param {string} categoryFilter La catégorie à filtrer (ou 'all' pour toutes)
-* @param {string} yearFilter L'année à filtrer (ou 'all' pour toutes)
-* @returns {Object} Les données traitées pour l'analyse saisonnière
-*/
-function processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter) {
+ * Traite les données pour l'analyse saisonnière
+ *
+ * @param {Array} crimeData Les données brutes des crimes
+ * @param {string} categoryFilter La catégorie à filtrer (ou 'all' pour toutes)
+ * @param {string} yearFilter L'année à filtrer (ou 'all' pour toutes)
+ * @returns {object} Les données traitées pour l'analyse saisonnière
+ */
+function processDataForSeasonalAnalysis (crimeData, categoryFilter, yearFilter) {
   // Filtrer les données selon les critères
   const filteredData = crimeData.filter(crime => {
-    if (!crime.DATE) return false;
+    if (!crime.DATE) return false
 
     // Filtre par catégorie
     if (categoryFilter !== 'all' && crime.CATEGORIE !== categoryFilter) {
-      return false;
+      return false
     }
 
     // Filtre par année
     if (yearFilter !== 'all') {
-      const crimeYear = new Date(crime.DATE).getFullYear();
+      const crimeYear = new Date(crime.DATE).getFullYear()
       if (crimeYear !== parseInt(yearFilter)) {
-        return false;
+        return false
       }
     }
 
-    return true;
-  });
+    return true
+  })
 
   // Initialiser les structures de données
-  const monthlyData = Array(12).fill(0);
-  const quarterlyData = Array(4).fill(0);
+  const monthlyData = Array(12).fill(0)
+  const quarterlyData = Array(4).fill(0)
   const seasonalData = {
     winter: 0, // Déc, Jan, Fév
     spring: 0, // Mar, Avr, Mai
     summer: 0, // Juin, Juil, Août
-    autumn: 0  // Sep, Oct, Nov
-  };
+    autumn: 0 // Sep, Oct, Nov
+  }
 
   // Compter les crimes par mois
   filteredData.forEach(crime => {
-    const date = new Date(crime.DATE);
-    const month = date.getMonth(); // 0-11
+    const date = new Date(crime.DATE)
+    const month = date.getMonth() // 0-11
 
     // Incrémenter le compteur mensuel
-    monthlyData[month]++;
+    monthlyData[month]++
 
     // Incrémenter le compteur trimestriel
-    const quarter = Math.floor(month / 3);
-    quarterlyData[quarter]++;
+    const quarter = Math.floor(month / 3)
+    quarterlyData[quarter]++
 
     // Incrémenter le compteur saisonnier
     if (month === 11 || month === 0 || month === 1) {
-      seasonalData.winter++;
+      seasonalData.winter++
     } else if (month >= 2 && month <= 4) {
-      seasonalData.spring++;
+      seasonalData.spring++
     } else if (month >= 5 && month <= 7) {
-      seasonalData.summer++;
+      seasonalData.summer++
     } else if (month >= 8 && month <= 10) {
-      seasonalData.autumn++;
+      seasonalData.autumn++
     }
-  });
+  })
 
   // Analyse par catégorie et saison
-  const categorySeasonalData = {};
+  const categorySeasonalData = {}
 
   if (categoryFilter === 'all') {
     // Regrouper par catégorie
-    const categories = [...new Set(filteredData.map(d => d.CATEGORIE).filter(c => c !== null))];
+    const categories = [...new Set(filteredData.map(d => d.CATEGORIE).filter(c => c !== null))]
 
     categories.forEach(category => {
-      const categoryCrimes = filteredData.filter(crime => crime.CATEGORIE === category);
+      const categoryCrimes = filteredData.filter(crime => crime.CATEGORIE === category)
 
       // Initialiser les compteurs pour cette catégorie
       categorySeasonalData[category] = {
@@ -533,49 +533,49 @@ function processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter) {
         summer: 0,
         autumn: 0,
         total: categoryCrimes.length
-      };
+      }
 
       // Compter les crimes par saison pour cette catégorie
       categoryCrimes.forEach(crime => {
-        const date = new Date(crime.DATE);
-        const month = date.getMonth();
+        const date = new Date(crime.DATE)
+        const month = date.getMonth()
 
         if (month === 11 || month === 0 || month === 1) {
-          categorySeasonalData[category].winter++;
+          categorySeasonalData[category].winter++
         } else if (month >= 2 && month <= 4) {
-          categorySeasonalData[category].spring++;
+          categorySeasonalData[category].spring++
         } else if (month >= 5 && month <= 7) {
-          categorySeasonalData[category].summer++;
+          categorySeasonalData[category].summer++
         } else if (month >= 8 && month <= 10) {
-          categorySeasonalData[category].autumn++;
+          categorySeasonalData[category].autumn++
         }
-      });
-    });
+      })
+    })
   }
 
   // Tendances saisonnières
-  const seasonalTrends = {};
-  const seasons = ['winter', 'spring', 'summer', 'autumn'];
+  const seasonalTrends = {}
+  const seasons = ['winter', 'spring', 'summer', 'autumn']
   const monthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-  ];
+  ]
 
   // Pour chaque saison, identifier les tendances
   seasons.forEach(season => {
-    const seasonMonths = getSeasonMonths(season);
-    const seasonMonthsData = seasonMonths.map(month => monthlyData[month]);
-    const totalSeasonCrimes = seasonalData[season];
-    const avgMonthlyInSeason = totalSeasonCrimes / 3;
+    const seasonMonths = getSeasonMonths(season)
+    const seasonMonthsData = seasonMonths.map(month => monthlyData[month])
+    const totalSeasonCrimes = seasonalData[season]
+    const avgMonthlyInSeason = totalSeasonCrimes / 3
 
     // Trouver le mois avec le plus de crimes dans cette saison
-    const maxMonthIndex = seasonMonths[seasonMonthsData.indexOf(Math.max(...seasonMonthsData))];
-    const maxMonthName = monthNames[maxMonthIndex];
-    const maxMonthCount = monthlyData[maxMonthIndex];
+    const maxMonthIndex = seasonMonths[seasonMonthsData.indexOf(Math.max(...seasonMonthsData))]
+    const maxMonthName = monthNames[maxMonthIndex]
+    const maxMonthCount = monthlyData[maxMonthIndex]
 
     // Calculer la part de cette saison dans le total
-    const totalCrimes = filteredData.length;
-    const seasonPercentage = totalCrimes > 0 ? (totalSeasonCrimes / totalCrimes) * 100 : 0;
+    const totalCrimes = filteredData.length
+    const seasonPercentage = totalCrimes > 0 ? (totalSeasonCrimes / totalCrimes) * 100 : 0
 
     // Stocker les tendances
     seasonalTrends[season] = {
@@ -584,22 +584,22 @@ function processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter) {
       peakMonth: maxMonthName,
       peakMonthCount: maxMonthCount,
       averageMonthly: avgMonthlyInSeason
-    };
-  });
+    }
+  })
 
   // Détecter les variations mensuelles importantes
-  const monthlyVariation = [];
+  const monthlyVariation = []
 
   for (let i = 0; i < 12; i++) {
-    const prevMonth = (i + 11) % 12; // Mois précédent (cyclique)
-    const nextMonth = (i + 1) % 12; // Mois suivant (cyclique)
+    const prevMonth = (i + 11) % 12 // Mois précédent (cyclique)
+    const nextMonth = (i + 1) % 12 // Mois suivant (cyclique)
 
     // Calculer les variations
-    const prevVariation = monthlyData[prevMonth] > 0 ?
-      ((monthlyData[i] - monthlyData[prevMonth]) / monthlyData[prevMonth]) * 100 : 0;
+    const prevVariation = monthlyData[prevMonth] > 0
+      ? ((monthlyData[i] - monthlyData[prevMonth]) / monthlyData[prevMonth]) * 100 : 0
 
-    const nextVariation = monthlyData[i] > 0 ?
-      ((monthlyData[nextMonth] - monthlyData[i]) / monthlyData[i]) * 100 : 0;
+    const nextVariation = monthlyData[i] > 0
+      ? ((monthlyData[nextMonth] - monthlyData[i]) / monthlyData[i]) * 100 : 0
 
     // Si les variations sont significatives
     if (Math.abs(prevVariation) > 15 || Math.abs(nextVariation) > 15) {
@@ -608,7 +608,7 @@ function processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter) {
         count: monthlyData[i],
         prevVariation,
         nextVariation
-      });
+      })
     }
   }
 
@@ -622,34 +622,34 @@ function processDataForSeasonalAnalysis(crimeData, categoryFilter, yearFilter) {
     categoryFilter,
     yearFilter,
     totalCrimes: filteredData.length
-  };
-}
-
-/**
-* Retourne les indices des mois pour une saison donnée
-* 
-* @param {string} season La saison ('winter', 'spring', 'summer', 'autumn')
-* @returns {Array} Les indices des mois pour cette saison
-*/
-function getSeasonMonths(season) {
-  switch (season) {
-    case 'winter': return [11, 0, 1]; // Déc, Jan, Fév
-    case 'spring': return [2, 3, 4]; // Mar, Avr, Mai
-    case 'summer': return [5, 6, 7]; // Juin, Juil, Août
-    case 'autumn': return [8, 9, 10]; // Sep, Oct, Nov
-    default: return [];
   }
 }
 
 /**
-* Crée une carte de chaleur des crimes par mois
-* 
-* @param {Object} data Les données traitées
-*/
-function createSeasonalHeatmap(data) {
+ * Retourne les indices des mois pour une saison donnée
+ *
+ * @param {string} season La saison ('winter', 'spring', 'summer', 'autumn')
+ * @returns {Array} Les indices des mois pour cette saison
+ */
+function getSeasonMonths (season) {
+  switch (season) {
+    case 'winter': return [11, 0, 1] // Déc, Jan, Fév
+    case 'spring': return [2, 3, 4] // Mar, Avr, Mai
+    case 'summer': return [5, 6, 7] // Juin, Juil, Août
+    case 'autumn': return [8, 9, 10] // Sep, Oct, Nov
+    default: return []
+  }
+}
+
+/**
+ * Crée une carte de chaleur des crimes par mois
+ *
+ * @param {object} data Les données traitées
+ */
+function createSeasonalHeatmap (data) {
   // Protection contre les données manquantes
   if (!data || !data.monthlyData) {
-    console.error("Données invalides pour la carte de chaleur");
+    console.error('Données invalides pour la carte de chaleur')
 
     // Utiliser des données par défaut si nécessaire
     data = {
@@ -663,53 +663,52 @@ function createSeasonalHeatmap(data) {
       totalCrimes: 1300,
       categoryFilter: 'all',
       yearFilter: 'all'
-    };
+    }
   }
 
   // Vider le conteneur du graphique
-  const chartContainer = document.getElementById('seasonal-chart');
+  const chartContainer = document.getElementById('seasonal-chart')
   if (!chartContainer) {
-    console.error("Conteneur du graphique saisonnier non trouvé");
-    return;
+    console.error('Conteneur du graphique saisonnier non trouvé')
+    return
   }
 
-  chartContainer.innerHTML = '';
+  chartContainer.innerHTML = ''
 
   // Définir les dimensions du graphique
-  const margin = { top: 40, right: 30, bottom: 50, left: 60 };
-  const width = chartContainer.clientWidth - margin.left - margin.right;
-  const height = chartContainer.clientHeight - margin.top - margin.bottom;
+  const margin = { top: 40, right: 30, bottom: 50, left: 60 }
+  const width = chartContainer.clientWidth - margin.left - margin.right
+  const height = chartContainer.clientHeight - margin.top - margin.bottom
 
   // Créer le conteneur SVG
   const svg = d3.select(chartContainer)
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
-    .attr('transform', `translate(${margin.left},${margin.top})`);
+    .attr('transform', `translate(${margin.left},${margin.top})`)
 
   // Définir les dimensions de la grille
-  const cellSize = Math.min(width / 12, 60);
-  const gridWidth = cellSize * 12;
-  const gridHeight = cellSize * 4;
+  const cellSize = Math.min(width / 12, 60)
+  const gridWidth = cellSize * 12
 
   // Centrer la grille horizontalement
-  const gridX = (width - gridWidth) / 2;
+  const gridX = (width - gridWidth) / 2
 
   // Noms des mois et saisons
   const monthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-  ];
+  ]
 
-  const seasonNames = ['Hiver', 'Printemps', 'Été', 'Automne'];
-  const seasonColors = ['#2196F3', '#4CAF50', '#FF9800', '#795548'];
+  const seasonNames = ['Hiver', 'Printemps', 'Été', 'Automne']
+  const seasonColors = ['#2196F3', '#4CAF50', '#FF9800', '#795548']
 
   // Échelle de couleur pour l'intensité des crimes
-  const maxCount = Math.max(...data.monthlyData);
+  const maxCount = Math.max(...data.monthlyData)
 
   const colorScale = d3.scaleSequential()
     .domain([0, maxCount])
-    .interpolator(d3.interpolateReds);
+    .interpolator(d3.interpolateReds)
 
   // Dessiner les étiquettes des mois
   svg.selectAll('.month-label')
@@ -722,7 +721,7 @@ function createSeasonalHeatmap(data) {
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'hanging')
     .style('font-size', '12px')
-    .text(d => d.substring(0, 3)); // Utiliser les trois premières lettres
+    .text(d => d.substring(0, 3)) // Utiliser les trois premières lettres
 
   // Dessiner les cellules de la heatmap pour les mois
   svg.selectAll('.month-cell')
@@ -738,14 +737,14 @@ function createSeasonalHeatmap(data) {
     .attr('rx', 2)
     .attr('ry', 2)
     .on('mouseover', function (event, d) {
-      const monthIndex = data.monthlyData.indexOf(d);
+      const monthIndex = data.monthlyData.indexOf(d)
       showTooltip(event, {
         title: monthNames[monthIndex],
         count: d,
         percentage: (d / data.totalCrimes * 100).toFixed(1) + '%'
-      });
+      })
     })
-    .on('mouseout', hideTooltip);
+    .on('mouseout', hideTooltip)
 
   // Ajouter les valeurs dans les cellules
   svg.selectAll('.month-value')
@@ -760,7 +759,7 @@ function createSeasonalHeatmap(data) {
     .style('font-size', '10px')
     .style('font-weight', 'bold')
     .style('fill', d => d > maxCount * 0.7 ? 'white' : 'black')
-    .text(d => d);
+    .text(d => d)
 
   // Dessiner les étiquettes des saisons
   svg.selectAll('.season-label')
@@ -775,7 +774,7 @@ function createSeasonalHeatmap(data) {
     .style('font-size', '12px')
     .style('fill', (d, i) => seasonColors[i])
     .style('font-weight', 'bold')
-    .text(d => d);
+    .text(d => d)
 
   // Dessiner les cellules de la heatmap pour les saisons
   const seasonData = [
@@ -783,19 +782,19 @@ function createSeasonalHeatmap(data) {
     data.seasonalData.spring,
     data.seasonalData.summer,
     data.seasonalData.autumn
-  ];
+  ]
 
   // Réorganiser les mois par saison pour l'affichage
   const seasonMonths = [
     [11, 0, 1], // Hiver (Déc, Jan, Fév)
-    [2, 3, 4],  // Printemps (Mar, Avr, Mai)
-    [5, 6, 7],  // Été (Juin, Juil, Août)
-    [8, 9, 10]  // Automne (Sep, Oct, Nov)
-  ];
+    [2, 3, 4], // Printemps (Mar, Avr, Mai)
+    [5, 6, 7], // Été (Juin, Juil, Août)
+    [8, 9, 10] // Automne (Sep, Oct, Nov)
+  ]
 
   // Dessiner les cellules pour chaque saison
   seasonNames.forEach((season, seasonIndex) => {
-    const months = seasonMonths[seasonIndex];
+    const months = seasonMonths[seasonIndex]
 
     // Dessiner les cellules pour les mois de cette saison
     months.forEach((monthIndex, i) => {
@@ -816,9 +815,9 @@ function createSeasonalHeatmap(data) {
             count: data.monthlyData[monthIndex],
             percentage: (data.monthlyData[monthIndex] / data.totalCrimes * 100).toFixed(1) + '%',
             season: seasonNames[seasonIndex]
-          });
+          })
         })
-        .on('mouseout', hideTooltip);
+        .on('mouseout', hideTooltip)
 
       // Ajouter les valeurs dans les cellules
       svg.append('text')
@@ -830,8 +829,8 @@ function createSeasonalHeatmap(data) {
         .style('font-size', '10px')
         .style('font-weight', 'bold')
         .style('fill', data.monthlyData[monthIndex] > maxCount * 0.7 ? 'white' : 'black')
-        .text(data.monthlyData[monthIndex]);
-    });
+        .text(data.monthlyData[monthIndex])
+    })
 
     // Dessiner la cellule du total saisonnier
     svg.append('rect')
@@ -849,9 +848,9 @@ function createSeasonalHeatmap(data) {
           title: seasonNames[seasonIndex],
           count: seasonData[seasonIndex],
           percentage: (seasonData[seasonIndex] / data.totalCrimes * 100).toFixed(1) + '%'
-        });
+        })
       })
-      .on('mouseout', hideTooltip);
+      .on('mouseout', hideTooltip)
 
     // Ajouter les valeurs du total saisonnier
     svg.append('text')
@@ -863,8 +862,8 @@ function createSeasonalHeatmap(data) {
       .style('font-size', '12px')
       .style('font-weight', 'bold')
       .style('fill', 'white')
-      .text(seasonData[seasonIndex]);
-  });
+      .text(seasonData[seasonIndex])
+  })
 
   // Ajouter le titre
   svg.append('text')
@@ -874,14 +873,14 @@ function createSeasonalHeatmap(data) {
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
     .style('font-weight', 'bold')
-    .text('Distribution saisonnière des crimes');
+    .text('Distribution saisonnière des crimes')
 
   // Ajouter l'échelle de couleur comme légende
-  const legendWidth = 200;
-  const legendHeight = 25; // Augmenter la hauteur
+  const legendWidth = 200
+  const legendHeight = 25 // Augmenter la hauteur
 
-  const legendX = width - legendWidth - 20;
-  const legendY = height - 60;
+  const legendX = width - legendWidth - 20
+  const legendY = height - 60
 
   // Ajouter un titre plus visible pour la légende
   svg.append('text')
@@ -890,15 +889,15 @@ function createSeasonalHeatmap(data) {
     .attr('text-anchor', 'start')
     .style('font-size', '14px')
     .style('font-weight', 'bold')
-    .text('Intensité des crimes:');
+    .text('Intensité des crimes:')
 
   // Créer des rectangles de couleur individuels au lieu d'un gradient
-  const numSteps = 5;
-  const stepWidth = legendWidth / numSteps;
+  const numSteps = 5
+  const stepWidth = legendWidth / numSteps
 
   for (let i = 0; i < numSteps; i++) {
     // Calculer la valeur que représente cette étape
-    const value = i * (maxCount / numSteps);
+    const value = i * (maxCount / numSteps)
 
     // Créer un rectangle avec une couleur distincte
     svg.append('rect')
@@ -908,7 +907,7 @@ function createSeasonalHeatmap(data) {
       .attr('height', legendHeight)
       .attr('fill', colorScale(value))
       .attr('stroke', '#333')
-      .attr('stroke-width', 1);
+      .attr('stroke-width', 1)
 
     // Ajouter la valeur sous chaque rectangle
     svg.append('text')
@@ -917,7 +916,7 @@ function createSeasonalHeatmap(data) {
       .attr('text-anchor', 'middle')
       .style('font-size', '11px')
       .style('font-weight', 'bold')
-      .text(Math.round(value));
+      .text(Math.round(value))
   }
 
   // Ajouter des indicateurs textuels pour plus de clarté
@@ -927,7 +926,7 @@ function createSeasonalHeatmap(data) {
     .attr('text-anchor', 'start')
     .style('font-size', '12px')
     .style('font-weight', 'bold')
-    .text('Faible');
+    .text('Faible')
 
   svg.append('text')
     .attr('x', legendX + legendWidth)
@@ -935,65 +934,65 @@ function createSeasonalHeatmap(data) {
     .attr('text-anchor', 'end')
     .style('font-size', '12px')
     .style('font-weight', 'bold')
-    .text('Élevé');
+    .text('Élevé')
 }
 
 /**
-* Crée un graphique radar des crimes par saison
-* 
-* @param {Object} data Les données traitées
-*/
-function createSeasonalRadarChart(data) {
+ * Crée un graphique radar des crimes par saison
+ *
+ * @param {object} data Les données traitées
+ */
+function createSeasonalRadarChart (data) {
   // Vider le conteneur du graphique
-  const chartContainer = document.getElementById('seasonal-chart');
-  chartContainer.innerHTML = '';
+  const chartContainer = document.getElementById('seasonal-chart')
+  chartContainer.innerHTML = ''
 
   // Définir les dimensions du graphique
-  const margin = { top: 80, right: 80, bottom: 80, left: 80 };
-  const width = chartContainer.clientWidth - margin.left - margin.right;
-  const height = chartContainer.clientHeight - margin.top - margin.bottom;
-  const radius = Math.min(width, height) / 2;
+  const margin = { top: 80, right: 80, bottom: 80, left: 80 }
+  const width = chartContainer.clientWidth - margin.left - margin.right
+  const height = chartContainer.clientHeight - margin.top - margin.bottom
+  const radius = Math.min(width, height) / 2
 
   // Créer le conteneur SVG
   const svg = d3.select(chartContainer)
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
-    .attr('transform', `translate(${width / 2 + margin.left}, ${height / 2 + margin.top})`);
+    .attr('transform', `translate(${width / 2 + margin.left}, ${height / 2 + margin.top})`)
 
   // Données pour le radar
-  const seasonNames = ['Hiver', 'Printemps', 'Été', 'Automne'];
+  const seasonNames = ['Hiver', 'Printemps', 'Été', 'Automne']
   const seasonData = [
     data.seasonalData.winter,
     data.seasonalData.spring,
     data.seasonalData.summer,
     data.seasonalData.autumn
-  ];
+  ]
 
   // Échelle angulaire pour les axes
   const angleScale = d3.scaleLinear()
     .domain([0, seasonNames.length])
-    .range([0, Math.PI * 2]);
+    .range([0, Math.PI * 2])
 
   // Échelle radiale pour les valeurs
-  const maxCount = Math.max(...seasonData);
+  const maxCount = Math.max(...seasonData)
 
   const radiusScale = d3.scaleLinear()
     .domain([0, maxCount])
     .range([0, radius])
-    .nice();
+    .nice()
 
   // Couleurs pour les saisons
-  const seasonColors = ['#2196F3', '#4CAF50', '#FF9800', '#795548'];
-  const seasonColorClasses = ['winter-color', 'spring-color', 'summer-color', 'autumn-color'];
+  const seasonColors = ['#2196F3', '#4CAF50', '#FF9800', '#795548']
+  const seasonColorClasses = ['winter-color', 'spring-color', 'summer-color', 'autumn-color']
 
   // Créer les cercles concentriques
-  const levels = 5;
-  const levelStep = maxCount / levels;
+  const levels = 5
+  const levelStep = maxCount / levels
 
   for (let level = 1; level <= levels; level++) {
-    const levelValue = level * levelStep;
-    const levelRadius = radiusScale(levelValue);
+    const levelValue = level * levelStep
+    const levelRadius = radiusScale(levelValue)
 
     // Cercle
     svg.append('circle')
@@ -1003,7 +1002,7 @@ function createSeasonalRadarChart(data) {
       .attr('fill', 'none')
       .attr('stroke', '#ddd')
       .attr('stroke-width', 1)
-      .attr('stroke-dasharray', '3,3');
+      .attr('stroke-dasharray', '3,3')
 
     // Étiquette de niveau
     svg.append('text')
@@ -1013,12 +1012,12 @@ function createSeasonalRadarChart(data) {
       .attr('dominant-baseline', 'baseline')
       .style('font-size', '10px')
       .style('fill', '#666')
-      .text(Math.round(levelValue));
+      .text(Math.round(levelValue))
   }
 
   // Créer les axes
   const axes = seasonNames.map((_, i) => {
-    const angle = angleScale(i) - Math.PI / 2; // Commencer à midi et tourner dans le sens horaire
+    const angle = angleScale(i) - Math.PI / 2 // Commencer à midi et tourner dans le sens horaire
     return {
       name: seasonNames[i],
       angle: angle,
@@ -1032,8 +1031,8 @@ function createSeasonalRadarChart(data) {
         x: (radius + 20) * Math.cos(angle),
         y: (radius + 20) * Math.sin(angle)
       }
-    };
-  });
+    }
+  })
 
   // Dessiner les axes
   axes.forEach((axis, i) => {
@@ -1044,45 +1043,45 @@ function createSeasonalRadarChart(data) {
       .attr('x2', axis.lineCoords.x2)
       .attr('y2', axis.lineCoords.y2)
       .attr('stroke', seasonColors[i])
-      .attr('stroke-width', 1.5);
+      .attr('stroke-width', 1.5)
 
     // Étiquette d'axe
     svg.append('text')
       .attr('x', axis.labelCoords.x)
       .attr('y', axis.labelCoords.y)
       .attr('text-anchor', () => {
-        const angle = axis.angle;
-        if (Math.abs(Math.cos(angle)) < 0.1) return 'middle';
-        return Math.cos(angle) > 0 ? 'start' : 'end';
+        const angle = axis.angle
+        if (Math.abs(Math.cos(angle)) < 0.1) return 'middle'
+        return Math.cos(angle) > 0 ? 'start' : 'end'
       })
       .attr('dominant-baseline', () => {
-        const angle = axis.angle;
-        if (Math.abs(Math.sin(angle)) < 0.1) return 'middle';
-        return Math.sin(angle) > 0 ? 'hanging' : 'auto';
+        const angle = axis.angle
+        if (Math.abs(Math.sin(angle)) < 0.1) return 'middle'
+        return Math.sin(angle) > 0 ? 'hanging' : 'auto'
       })
       .style('font-size', '14px')
       .style('font-weight', 'bold')
       .attr('class', seasonColorClasses[i])
-      .text(axis.name);
-  });
+      .text(axis.name)
+  })
 
   // Définir les coordonnées pour l'aire du radar
   const radarPoints = seasonData.map((value, i) => {
-    const angle = angleScale(i) - Math.PI / 2;
-    const r = radiusScale(value);
+    const angle = angleScale(i) - Math.PI / 2
+    const r = radiusScale(value)
     return {
       x: r * Math.cos(angle),
       y: r * Math.sin(angle),
       value: value,
       season: seasonNames[i]
-    };
-  });
+    }
+  })
 
   // Créer une ligne pour tracer l'aire
   const radarLine = d3.lineRadial()
     .radius(d => radiusScale(d))
     .angle((d, i) => angleScale(i) - Math.PI / 2)
-    .curve(d3.curveLinearClosed);
+    .curve(d3.curveLinearClosed)
 
   // Dessiner l'aire du radar
   svg.append('path')
@@ -1092,7 +1091,7 @@ function createSeasonalRadarChart(data) {
     .attr('fill', '#FB8C00')
     .attr('fill-opacity', 0.3)
     .attr('stroke', '#FB8C00')
-    .attr('stroke-width', 2);
+    .attr('stroke-width', 2)
 
   // Ajouter les points sur le radar
   radarPoints.forEach((point, i) => {
@@ -1107,24 +1106,24 @@ function createSeasonalRadarChart(data) {
         // Mettre en évidence le point
         d3.select(this)
           .attr('r', 8)
-          .attr('stroke', '#333');
+          .attr('stroke', '#333')
 
         // Afficher l'infobulle
         showTooltip(event, {
           title: point.season,
           count: point.value,
           percentage: (point.value / data.totalCrimes * 100).toFixed(1) + '%'
-        });
+        })
       })
       .on('mouseout', function () {
         // Restaurer le point
         d3.select(this)
           .attr('r', 6)
-          .attr('stroke', '#fff');
+          .attr('stroke', '#fff')
 
         // Masquer l'infobulle
-        hideTooltip();
-      });
+        hideTooltip()
+      })
 
     // Ajouter la valeur
     svg.append('text')
@@ -1133,8 +1132,8 @@ function createSeasonalRadarChart(data) {
       .attr('text-anchor', 'middle')
       .style('font-size', '12px')
       .style('font-weight', 'bold')
-      .text(point.value);
-  });
+      .text(point.value)
+  })
 
   // Ajouter le titre
   svg.append('text')
@@ -1144,7 +1143,7 @@ function createSeasonalRadarChart(data) {
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
     .style('font-weight', 'bold')
-    .text('Distribution saisonnière des crimes');
+    .text('Distribution saisonnière des crimes')
 
   // Ajouter le sous-titre
   if (data.categoryFilter !== 'all') {
@@ -1154,7 +1153,7 @@ function createSeasonalRadarChart(data) {
       .attr('y', -radius - 30)
       .attr('text-anchor', 'middle')
       .style('font-size', '14px')
-      .text(`Catégorie: ${formatCategoryName(data.categoryFilter)}`);
+      .text(`Catégorie: ${formatCategoryName(data.categoryFilter)}`)
   }
 
   // Ajouter l'information sur le nombre total de crimes
@@ -1165,60 +1164,60 @@ function createSeasonalRadarChart(data) {
     .attr('dominant-baseline', 'middle')
     .style('font-size', '16px')
     .style('font-weight', 'bold')
-    .text(data.totalCrimes);
+    .text(data.totalCrimes)
 
   svg.append('text')
     .attr('x', 0)
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .style('font-size', '12px')
-    .text('crimes');
+    .text('crimes')
 }
 /**
-* Crée un graphique linéaire des crimes par mois
-* 
-* @param {Object} data Les données traitées
-*/
-function createSeasonalLineChart(data) {
+ * Crée un graphique linéaire des crimes par mois
+ *
+ * @param {object} data Les données traitées
+ */
+function createSeasonalLineChart (data) {
   // Vider le conteneur du graphique
-  const chartContainer = document.getElementById('seasonal-chart');
-  chartContainer.innerHTML = '';
+  const chartContainer = document.getElementById('seasonal-chart')
+  chartContainer.innerHTML = ''
 
   // Définir les dimensions du graphique
-  const margin = { top: 70, right: 30, bottom: 50, left: 60 }; // Augmenter le margin.top pour la légende
-  const width = chartContainer.clientWidth - margin.left - margin.right;
-  const height = chartContainer.clientHeight - margin.top - margin.bottom;
+  const margin = { top: 70, right: 30, bottom: 50, left: 60 } // Augmenter le margin.top pour la légende
+  const width = chartContainer.clientWidth - margin.left - margin.right
+  const height = chartContainer.clientHeight - margin.top - margin.bottom
 
   // Créer le conteneur SVG
   const svg = d3.select(chartContainer)
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
-    .attr('transform', `translate(${margin.left},${margin.top})`);
+    .attr('transform', `translate(${margin.left},${margin.top})`)
 
   // Données
   const monthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-  ];
+  ]
 
   // Créer l'échelle X
   const x = d3.scaleBand()
     .domain(monthNames)
     .range([0, width])
-    .padding(0.1);
+    .padding(0.1)
 
   // Créer l'échelle Y
-  const yMax = Math.max(...data.monthlyData) * 1.1;
+  const yMax = Math.max(...data.monthlyData) * 1.1
 
   const y = d3.scaleLinear()
     .domain([0, yMax])
     .nice()
-    .range([height, 0]);
+    .range([height, 0])
 
   // Créer les axes
-  const xAxis = d3.axisBottom(x);
-  const yAxis = d3.axisLeft(y);
+  const xAxis = d3.axisBottom(x)
+  const yAxis = d3.axisLeft(y)
 
   // Dessiner l'axe X
   svg.append('g')
@@ -1229,12 +1228,12 @@ function createSeasonalLineChart(data) {
     .style('text-anchor', 'end')
     .attr('dx', '-.8em')
     .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('transform', 'rotate(-45)')
 
   // Dessiner l'axe Y
   svg.append('g')
     .attr('class', 'y-axis')
-    .call(yAxis);
+    .call(yAxis)
 
   // Ajouter le titre de l'axe Y
   svg.append('text')
@@ -1243,7 +1242,7 @@ function createSeasonalLineChart(data) {
     .attr('x', -height / 2)
     .attr('text-anchor', 'middle')
     .style('font-size', '12px')
-    .text('Nombre de crimes');
+    .text('Nombre de crimes')
 
   // Saisonnalités
   const seasonRanges = [
@@ -1251,12 +1250,12 @@ function createSeasonalLineChart(data) {
     { season: 'spring', months: [2, 3, 4], color: '#4CAF50' },
     { season: 'summer', months: [5, 6, 7], color: '#FF9800' },
     { season: 'autumn', months: [8, 9, 10], color: '#795548' }
-  ];
+  ]
 
   // Créer des zones colorées pour les saisons
   seasonRanges.forEach(seasonRange => {
-    const xStart = x(monthNames[seasonRange.months[0]]);
-    const xEnd = x(monthNames[seasonRange.months[seasonRange.months.length - 1]]) + x.bandwidth();
+    const xStart = x(monthNames[seasonRange.months[0]])
+    const xEnd = x(monthNames[seasonRange.months[seasonRange.months.length - 1]]) + x.bandwidth()
 
     svg.append('rect')
       .attr('x', xStart)
@@ -1264,7 +1263,7 @@ function createSeasonalLineChart(data) {
       .attr('width', xEnd - xStart)
       .attr('height', height)
       .attr('fill', seasonRange.color)
-      .attr('opacity', 0.1);
+      .attr('opacity', 0.1)
 
     // Ajouter le nom de la saison
     svg.append('text')
@@ -1274,16 +1273,16 @@ function createSeasonalLineChart(data) {
       .style('font-size', '12px')
       .style('font-weight', 'bold')
       .style('fill', seasonRange.color)
-      .text(seasonRange.season === 'winter' ? 'Hiver' :
-        seasonRange.season === 'spring' ? 'Printemps' :
-          seasonRange.season === 'summer' ? 'Été' : 'Automne');
-  });
+      .text(seasonRange.season === 'winter' ? 'Hiver'
+        : seasonRange.season === 'spring' ? 'Printemps'
+          : seasonRange.season === 'summer' ? 'Été' : 'Automne')
+  })
 
   // Créer le générateur de ligne
   const line = d3.line()
     .x((d, i) => x(monthNames[i]) + x.bandwidth() / 2)
     .y(d => y(d))
-    .curve(d3.curveMonotoneX);
+    .curve(d3.curveMonotoneX)
 
   // Dessiner la ligne
   svg.append('path')
@@ -1292,7 +1291,7 @@ function createSeasonalLineChart(data) {
     .attr('fill', 'none')
     .attr('stroke', '#FB8C00')
     .attr('stroke-width', 3)
-    .attr('d', line);
+    .attr('d', line)
 
   // Ajouter les points
   svg.selectAll('.seasonal-point')
@@ -1305,10 +1304,10 @@ function createSeasonalLineChart(data) {
     .attr('r', 5)
     .attr('fill', (d, i) => {
       // Déterminer la saison pour ce mois
-      if (i === 0 || i === 1 || i === 11) return '#2196F3'; // Hiver
-      if (i >= 2 && i <= 4) return '#4CAF50'; // Printemps
-      if (i >= 5 && i <= 7) return '#FF9800'; // Été
-      return '#795548'; // Automne
+      if (i === 0 || i === 1 || i === 11) return '#2196F3' // Hiver
+      if (i >= 2 && i <= 4) return '#4CAF50' // Printemps
+      if (i >= 5 && i <= 7) return '#FF9800' // Été
+      return '#795548' // Automne
     })
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
@@ -1316,18 +1315,18 @@ function createSeasonalLineChart(data) {
       // Mettre en évidence le point
       d3.select(this)
         .attr('r', 8)
-        .attr('stroke', '#333');
+        .attr('stroke', '#333')
 
       // Déterminer l'index et le mois
-      const index = data.monthlyData.indexOf(d);
-      const month = monthNames[index];
+      const index = data.monthlyData.indexOf(d)
+      const month = monthNames[index]
 
       // Déterminer la saison
-      let season;
-      if (index === 0 || index === 1 || index === 11) season = 'Hiver';
-      else if (index >= 2 && index <= 4) season = 'Printemps';
-      else if (index >= 5 && index <= 7) season = 'Été';
-      else season = 'Automne';
+      let season
+      if (index === 0 || index === 1 || index === 11) season = 'Hiver'
+      else if (index >= 2 && index <= 4) season = 'Printemps'
+      else if (index >= 5 && index <= 7) season = 'Été'
+      else season = 'Automne'
 
       // Afficher l'infobulle
       showTooltip(event, {
@@ -1335,17 +1334,17 @@ function createSeasonalLineChart(data) {
         count: d,
         percentage: (d / data.totalCrimes * 100).toFixed(1) + '%',
         season: season
-      });
+      })
     })
     .on('mouseout', function () {
       // Restaurer le point
       d3.select(this)
         .attr('r', 5)
-        .attr('stroke', '#fff');
+        .attr('stroke', '#fff')
 
       // Masquer l'infobulle
-      hideTooltip();
-    });
+      hideTooltip()
+    })
 
   // Ajouter les valeurs au-dessus des points
   svg.selectAll('.seasonal-value')
@@ -1358,7 +1357,7 @@ function createSeasonalLineChart(data) {
     .attr('text-anchor', 'middle')
     .style('font-size', '10px')
     .style('font-weight', 'bold')
-    .text(d => d);
+    .text(d => d)
 
   // Ajouter le titre
   svg.append('text')
@@ -1368,7 +1367,7 @@ function createSeasonalLineChart(data) {
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
     .style('font-weight', 'bold')
-    .text('Évolution mensuelle des crimes');
+    .text('Évolution mensuelle des crimes')
 
   // Ajouter le sous-titre
   if (data.categoryFilter !== 'all') {
@@ -1378,154 +1377,153 @@ function createSeasonalLineChart(data) {
       .attr('y', (-margin.top / 2 + 20) - 15)
       .attr('text-anchor', 'middle')
       .style('font-size', '14px')
-      .text(`Catégorie: ${formatCategoryName(data.categoryFilter)}`);
+      .text(`Catégorie: ${formatCategoryName(data.categoryFilter)}`)
   }
 
   // Créer la légende pour les saisons en haut du graphique, au lieu d'à droite
   const legend = svg.append('g')
     .attr('class', 'seasonal-legend')
-    .attr('transform', `translate(${width / 2 - 150}, -25)`);
+    .attr('transform', `translate(${width / 2 - 150}, -25)`)
 
   const seasonLabels = [
     { season: 'Hiver', color: '#2196F3' },
     { season: 'Printemps', color: '#4CAF50' },
     { season: 'Été', color: '#FF9800' },
     { season: 'Automne', color: '#795548' }
-  ];
+  ]
 
   // Disposition horizontale de la légende
   seasonLabels.forEach((item, i) => {
     const legendItem = legend.append('g')
-      .attr('transform', `translate(${i * 100}, 0)`);
+      .attr('transform', `translate(${i * 100}, 0)`)
 
     legendItem.append('rect')
       .attr('width', 15)
       .attr('height', 15)
-      .attr('fill', item.color);
+      .attr('fill', item.color)
 
     legendItem.append('text')
       .attr('x', 20)
       .attr('y', 12)
-      .text(item.season);
-  });
+      .text(item.season)
+  })
 }
 
 /**
-* Génère des insights sur les tendances saisonnières
-* 
-* @param {Object} data Les données traitées
-*/
-function generateSeasonalInsights(data) {
-  const insightsContent = document.querySelector('.seasonal-insights .insights-content');
+ * Génère des insights sur les tendances saisonnières
+ *
+ * @param {object} data Les données traitées
+ */
+function generateSeasonalInsights (data) {
+  const insightsContent = document.querySelector('.seasonal-insights .insights-content')
 
   // Tendances générales
-  let insightsHtml = '<p>';
+  let insightsHtml = '<p>'
 
   // Trouver la saison avec le plus de crimes
-  const seasons = ['winter', 'spring', 'summer', 'autumn'];
   const seasonCounts = [
     data.seasonalData.winter,
     data.seasonalData.spring,
     data.seasonalData.summer,
     data.seasonalData.autumn
-  ];
+  ]
 
-  const maxSeasonIndex = seasonCounts.indexOf(Math.max(...seasonCounts));
-  const minSeasonIndex = seasonCounts.indexOf(Math.min(...seasonCounts));
+  const maxSeasonIndex = seasonCounts.indexOf(Math.max(...seasonCounts))
+  const minSeasonIndex = seasonCounts.indexOf(Math.min(...seasonCounts))
 
-  const seasonNames = ['l\'hiver', 'le printemps', 'l\'été', 'l\'automne'];
+  const seasonNames = ['l\'hiver', 'le printemps', 'l\'été', 'l\'automne']
 
   // Premier insight: la saison la plus active
   insightsHtml += `La saison avec le plus d'activité criminelle est <strong>${seasonNames[maxSeasonIndex]}</strong>, 
-représentant <strong>${(seasonCounts[maxSeasonIndex] / data.totalCrimes * 100).toFixed(1)}%</strong> de tous les crimes. `;
+représentant <strong>${(seasonCounts[maxSeasonIndex] / data.totalCrimes * 100).toFixed(1)}%</strong> de tous les crimes. `
 
   insightsHtml += `En revanche, <strong>${seasonNames[minSeasonIndex]}</strong> est la période la plus calme 
-avec seulement <strong>${(seasonCounts[minSeasonIndex] / data.totalCrimes * 100).toFixed(1)}%</strong> des incidents.`;
+avec seulement <strong>${(seasonCounts[minSeasonIndex] / data.totalCrimes * 100).toFixed(1)}%</strong> des incidents.`
 
-  insightsHtml += '</p>';
+  insightsHtml += '</p>'
 
   // Tendances mensuelles
   const monthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-  ];
+  ]
 
   // Trouver le mois avec le plus et le moins de crimes
-  const maxMonthIndex = data.monthlyData.indexOf(Math.max(...data.monthlyData));
-  const minMonthIndex = data.monthlyData.indexOf(Math.min(...data.monthlyData));
+  const maxMonthIndex = data.monthlyData.indexOf(Math.max(...data.monthlyData))
+  const minMonthIndex = data.monthlyData.indexOf(Math.min(...data.monthlyData))
 
   insightsHtml += `<p>Le mois avec le plus haut taux de criminalité est <strong>${monthNames[maxMonthIndex]}</strong> 
 avec <strong>${data.monthlyData[maxMonthIndex]}</strong> crimes, tandis que <strong>${monthNames[minMonthIndex]}</strong> 
-enregistre le taux le plus bas avec <strong>${data.monthlyData[minMonthIndex]}</strong> crimes.</p>`;
+enregistre le taux le plus bas avec <strong>${data.monthlyData[minMonthIndex]}</strong> crimes.</p>`
 
   // Variations significatives
   if (data.monthlyVariation.length > 0) {
-    insightsHtml += '<p>Des variations mensuelles significatives ont été identifiées:</p><ul>';
+    insightsHtml += '<p>Des variations mensuelles significatives ont été identifiées:</p><ul>'
 
     data.monthlyVariation.slice(0, 3).forEach(variation => {
       if (variation.prevVariation > 15) {
-        insightsHtml += `<li><strong>${variation.month}</strong>: augmentation de ${variation.prevVariation.toFixed(1)}% par rapport au mois précédent</li>`;
+        insightsHtml += `<li><strong>${variation.month}</strong>: augmentation de ${variation.prevVariation.toFixed(1)}% par rapport au mois précédent</li>`
       } else if (variation.prevVariation < -15) {
-        insightsHtml += `<li><strong>${variation.month}</strong>: diminution de ${Math.abs(variation.prevVariation).toFixed(1)}% par rapport au mois précédent</li>`;
+        insightsHtml += `<li><strong>${variation.month}</strong>: diminution de ${Math.abs(variation.prevVariation).toFixed(1)}% par rapport au mois précédent</li>`
       }
-    });
+    })
 
-    insightsHtml += '</ul>';
+    insightsHtml += '</ul>'
   }
 
   // Insights spécifiques aux catégories
   if (data.categoryFilter === 'all' && Object.keys(data.categorySeasonalData).length > 0) {
     // Trouver les catégories les plus affectées par la saisonnalité
-    const categorySeasonality = [];
+    const categorySeasonality = []
 
     Object.entries(data.categorySeasonalData).forEach(([category, seasonData]) => {
-      if (seasonData.total < 10) return; // Ignorer les catégories avec trop peu de données
+      if (seasonData.total < 10) return // Ignorer les catégories avec trop peu de données
 
       const maxSeason = Object.entries(seasonData)
         .filter(([key]) => key !== 'total')
-        .sort((a, b) => b[1] - a[1])[0];
+        .sort((a, b) => b[1] - a[1])[0]
 
-      const percentage = (maxSeason[1] / seasonData.total * 100).toFixed(1);
+      const percentage = (maxSeason[1] / seasonData.total * 100).toFixed(1)
 
       if (percentage > 35) { // Seuil pour la saisonnalité significative
         categorySeasonality.push({
           category,
           season: maxSeason[0],
           percentage
-        });
+        })
       }
-    });
+    })
 
     if (categorySeasonality.length > 0) {
-      categorySeasonality.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
+      categorySeasonality.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage))
 
-      insightsHtml += '<p>Certains types de crimes montrent une forte saisonnalité:</p><ul>';
+      insightsHtml += '<p>Certains types de crimes montrent une forte saisonnalité:</p><ul>'
 
       categorySeasonality.slice(0, 3).forEach(item => {
         const seasonName =
-          item.season === 'winter' ? 'l\'hiver' :
-            item.season === 'spring' ? 'le printemps' :
-              item.season === 'summer' ? 'l\'été' : 'l\'automne';
+          item.season === 'winter' ? 'l\'hiver'
+            : item.season === 'spring' ? 'le printemps'
+              : item.season === 'summer' ? 'l\'été' : 'l\'automne'
 
-        insightsHtml += `<li>Les <strong>${formatCategoryName(item.category)}</strong> sont plus fréquents pendant ${seasonName} (${item.percentage}%)</li>`;
-      });
+        insightsHtml += `<li>Les <strong>${formatCategoryName(item.category)}</strong> sont plus fréquents pendant ${seasonName} (${item.percentage}%)</li>`
+      })
 
-      insightsHtml += '</ul>';
+      insightsHtml += '</ul>'
     }
   }
 
   // Mettre à jour le contenu des insights
-  insightsContent.innerHTML = insightsHtml;
+  insightsContent.innerHTML = insightsHtml
 }
 
 /**
-* Affiche un résumé pour chaque saison
-* 
-* @param {Object} data Les données traitées
-*/
-function displaySeasonalSummary(data) {
-  const seasonalCards = document.querySelector('.seasonal-cards');
-  seasonalCards.innerHTML = '';
+ * Affiche un résumé pour chaque saison
+ *
+ * @param {object} data Les données traitées
+ */
+function displaySeasonalSummary (data) {
+  const seasonalCards = document.querySelector('.seasonal-cards')
+  seasonalCards.innerHTML = ''
 
   // Données pour chaque saison
   const seasons = [
@@ -1533,7 +1531,7 @@ function displaySeasonalSummary(data) {
     { name: 'Printemps', key: 'spring', color: '#4CAF50', months: [2, 3, 4] },
     { name: 'Été', key: 'summer', color: '#FF9800', months: [5, 6, 7] },
     { name: 'Automne', key: 'autumn', color: '#795548', months: [8, 9, 10] }
-  ];
+  ]
 
   // Extraire les valeurs de saison pour faciliter les comparaisons
   const seasonCounts = [
@@ -1541,31 +1539,31 @@ function displaySeasonalSummary(data) {
     data.seasonalData.spring,
     data.seasonalData.summer,
     data.seasonalData.autumn
-  ];
+  ]
 
-  const maxSeasonIndex = seasonCounts.indexOf(Math.max(...seasonCounts));
-  const minSeasonIndex = seasonCounts.indexOf(Math.min(...seasonCounts));
+  const maxSeasonIndex = seasonCounts.indexOf(Math.max(...seasonCounts))
+  const minSeasonIndex = seasonCounts.indexOf(Math.min(...seasonCounts))
 
   const monthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-  ];
+  ]
 
   // Créer une carte pour chaque saison
   seasons.forEach((season, index) => {
-    const card = document.createElement('div');
-    card.className = `season-card season-card-${season.key}`;
+    const card = document.createElement('div')
+    card.className = `season-card season-card-${season.key}`
 
     // Calculer les statistiques pour cette saison
-    const seasonCount = data.seasonalData[season.key];
-    const percentage = (seasonCount / data.totalCrimes * 100).toFixed(1);
+    const seasonCount = data.seasonalData[season.key]
+    const percentage = (seasonCount / data.totalCrimes * 100).toFixed(1)
 
     // Trouver le mois le plus actif dans cette saison
-    const seasonMonths = season.months;
-    const monthCounts = seasonMonths.map(m => data.monthlyData[m]);
-    const maxMonthIndex = seasonMonths[monthCounts.indexOf(Math.max(...monthCounts))];
-    const maxMonthName = monthNames[maxMonthIndex];
-    const maxMonthCount = data.monthlyData[maxMonthIndex];
+    const seasonMonths = season.months
+    const monthCounts = seasonMonths.map(m => data.monthlyData[m])
+    const maxMonthIndex = seasonMonths[monthCounts.indexOf(Math.max(...monthCounts))]
+    const maxMonthName = monthNames[maxMonthIndex]
+    const maxMonthCount = data.monthlyData[maxMonthIndex]
 
     // Contenu de la carte
     card.innerHTML = `
@@ -1578,32 +1576,32 @@ function displaySeasonalSummary(data) {
           Pic : <strong>${maxMonthName}</strong> (${maxMonthCount} crimes)
         </div>
         <div class="season-trend">
-          ${index === maxSeasonIndex ? '☝️ Saison la plus active' :
-        index === minSeasonIndex ? '👇 Saison la moins active' : ''}
+          ${index === maxSeasonIndex ? '☝️ Saison la plus active'
+        : index === minSeasonIndex ? '👇 Saison la moins active' : ''}
         </div>
       </div>
-    `;
+    `
 
-    seasonalCards.appendChild(card);
-  });
+    seasonalCards.appendChild(card)
+  })
 }
 
 /**
-* Affiche une infobulle
-* 
-* @param {Event} event L'événement de survol
-* @param {Object} data Les données à afficher
-*/
-function showTooltip(event, data) {
+ * Affiche une infobulle
+ *
+ * @param {Event} event L'événement de survol
+ * @param {object} data Les données à afficher
+ */
+function showTooltip (event, data) {
   // Créer l'infobulle si elle n'existe pas
   if (!document.querySelector('.season-tooltip')) {
-    const tooltip = document.createElement('div');
-    tooltip.className = 'season-tooltip';
-    document.body.appendChild(tooltip);
+    const tooltip = document.createElement('div')
+    tooltip.className = 'season-tooltip'
+    document.body.appendChild(tooltip)
   }
 
   // Récupérer l'infobulle
-  const tooltip = document.querySelector('.season-tooltip');
+  const tooltip = document.querySelector('.season-tooltip')
 
   // Contenu de l'infobulle
   let tooltipContent = `
@@ -1614,37 +1612,37 @@ function showTooltip(event, data) {
   Nombre: <strong>${data.count}</strong><br>
   Pourcentage: ${data.percentage}
 </div>
-`;
+`
 
   if (data.season) {
-    tooltipContent += `<div>Saison: <strong>${data.season}</strong></div>`;
+    tooltipContent += `<div>Saison: <strong>${data.season}</strong></div>`
   }
 
-  tooltip.innerHTML = tooltipContent;
+  tooltip.innerHTML = tooltipContent
 
   // Positionner l'infobulle
-  tooltip.style.left = (event.pageX + 10) + 'px';
-  tooltip.style.top = (event.pageY - 28) + 'px';
-  tooltip.style.opacity = 1;
+  tooltip.style.left = (event.pageX + 10) + 'px'
+  tooltip.style.top = (event.pageY - 28) + 'px'
+  tooltip.style.opacity = 1
 }
 
 /**
-* Cache l'infobulle
-*/
-function hideTooltip() {
-  const tooltip = document.querySelector('.season-tooltip');
+ * Cache l'infobulle
+ */
+function hideTooltip () {
+  const tooltip = document.querySelector('.season-tooltip')
   if (tooltip) {
-    tooltip.style.opacity = 0;
+    tooltip.style.opacity = 0
   }
 }
 
 /**
-* Formate le nom d'une catégorie pour l'affichage
-* 
-* @param {string} category La catégorie à formater
-* @returns {string} Le nom formaté
-*/
-function formatCategoryName(category) {
-  if (!category) return 'Non spécifié';
-  return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+ * Formate le nom d'une catégorie pour l'affichage
+ *
+ * @param {string} category La catégorie à formater
+ * @returns {string} Le nom formaté
+ */
+function formatCategoryName (category) {
+  if (!category) return 'Non spécifié'
+  return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()
 }

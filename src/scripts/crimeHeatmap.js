@@ -8,7 +8,7 @@
  * Initialise la carte de chaleur des crimes
  *
  * @param {Array} crimeData Les données des crimes
- * @param {Object} container Le conteneur où placer la visualisation
+ * @param {object} container Le conteneur où placer la visualisation
  */
 export function createCrimeHeatmap (crimeData, container) {
   // Créer un conteneur pour la carte de chaleur
@@ -76,10 +76,8 @@ export function createCrimeHeatmap (crimeData, container) {
 
   // Extraire les catégories uniques de crimes
   const crimeTypes = [...new Set(crimeData.map(d => d.CATEGORIE).filter(c => c))]
-  console.log("text")
   // Remplir le sélecteur d'années
   const yearSelect = document.getElementById('year-filter-heatmap')
-
 
   // Option "Toutes les années"
   const allYearsOption = document.createElement('option')
