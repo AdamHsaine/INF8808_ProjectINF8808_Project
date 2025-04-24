@@ -38,7 +38,8 @@ export function createCrimeCorrelationAnalysis (crimeData, container) {
       <div class="control-group">
         <label for="correlation-year">Année d'analyse:</label>
         <select id="correlation-year">
-          <!-- Les années seront ajoutées dynamiquement -->
+          <option value="all">Toutes les années</option>
+          <!-- Les autres années seront ajoutées dynamiquement ou filtrées après -->
         </select>
       </div>
       <button id="apply-correlation-controls" class="apply-button">Appliquer</button>
@@ -63,7 +64,7 @@ export function createCrimeCorrelationAnalysis (crimeData, container) {
   // Ajouter les styles pour la visualisation
   addCorrelationAnalysisStyles()
 
-  // Remplir le sélecteur d'années
+  // Remplir le sélecteur d'années (ici, vous pouvez ajouter directement les années dynamiquement si nécessaire)
   populateYearSelector(crimeData)
 
   // Gestionnaire d'événement pour les contrôles
@@ -303,11 +304,16 @@ function updateCorrelationAnalysis (crimeData) {
   const periodType = document.getElementById('correlation-period').value
   const selectedYear = document.getElementById('correlation-year').value
 
-  // Filtrer les données pour l'année sélectionnée
-  const filteredData = crimeData.filter(crime => {
-    const crimeYear = new Date(crime.DATE).getFullYear()
-    return crimeYear === parseInt(selectedYear) // Filtrer par l'année sélectionnée
-  })
+  // Vérifier si "Toutes les années" est sélectionné
+  let filteredData
+  if (selectedYear === 'all') {
+    filteredData = crimeData // Garder toutes les données si "all" est sélectionné
+  } else {
+    filteredData = crimeData.filter(crime => {
+      const crimeYear = new Date(crime.DATE).getFullYear()
+      return crimeYear === parseInt(selectedYear) // Filtrer par l'année sélectionnée
+    })
+  }
 
   // Traiter les données pour l'analyse - Utiliser 'all' comme valeur par défaut
   const processedData = processDataForCorrelationAnalysis(filteredData, periodType, 'all')
@@ -325,7 +331,6 @@ function updateCorrelationAnalysis (crimeData) {
   // Générer les insights basés sur les données
   generateCorrelationInsights(processedData, periodType)
 }
-
 /**
  * Traite les données pour l'analyse de corrélation
  *
@@ -335,16 +340,20 @@ function updateCorrelationAnalysis (crimeData) {
  * @returns {object} Les données traitées pour l'analyse
  */
 function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount) {
-  // Filtrer les données avec date valide
   const validData = crimeData.filter(crime => crime.DATE && crime.CATEGORIE)
+  const selectedYear = document.getElementById('correlation-year').value
 
-  // Extraire les périodes selon le type
-  const periods = extractPeriods(validData, periodType)
+  // Si "Toutes les années" est sélectionné, on garde toutes les données
+  const filteredData = selectedYear === 'all'
+    ? validData // Utiliser toutes les données si "all" est sélectionné
+    : validData.filter(crime => new Date(crime.DATE).getFullYear().toString() === selectedYear)
+
+  const periods = extractPeriods(filteredData, periodType)
 
   // Extraire les catégories et les compter
   const categoryCounts = {}
 
-  validData.forEach(crime => {
+  filteredData.forEach(crime => {
     if (!categoryCounts[crime.CATEGORIE]) {
       categoryCounts[crime.CATEGORIE] = 0
     }
@@ -368,7 +377,7 @@ function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount
   const correlationMatrix = {}
   const periodTotals = {}
   const categoryTotals = {}
-  const grandTotal = validData.length
+  const grandTotal = filteredData.length
 
   // Initialiser les structures
   selectedCategories.forEach(category => {
@@ -385,7 +394,7 @@ function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount
   })
 
   // Remplir la matrice
-  validData.forEach(crime => {
+  filteredData.forEach(crime => {
     const category = crime.CATEGORIE
     if (selectedCategories.includes(category)) {
       const period = getPeriod(crime.DATE, crime.QUART, periodType)
@@ -405,10 +414,7 @@ function processDataForCorrelationAnalysis (crimeData, periodType, categoryCount
     deviationMatrix[category] = {}
 
     periods.forEach(period => {
-      // Valeur attendue si indépendance (loi du produit des probabilités)
       const expected = (categoryTotals[category] * periodTotals[period]) / grandTotal
-
-      // Écart par rapport à l'attendu (en pourcentage)
       const actual = correlationMatrix[category][period]
       const deviation = expected > 0 ? ((actual - expected) / expected) * 100 : 0
 
