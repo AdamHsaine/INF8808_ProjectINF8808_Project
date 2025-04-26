@@ -1,3 +1,4 @@
+
 /**
  * Module pour créer une carte de chaleur des hotspots criminels
  * Ce module répond aux questions I.3 (variation géographique selon l'heure)
@@ -15,67 +16,69 @@ export function createCrimeHeatmap (crimeData, container) {
   const heatmapDiv = document.createElement('div')
   heatmapDiv.className = 'heatmap-container'
   heatmapDiv.innerHTML = `
-      <h2>Carte de chaleur des hotspots criminels</h2>
-      <div class="heatmap-description">
-        Cette visualisation montre la distribution géographique des crimes selon l'heure de la journée 
-        et permet d'identifier les tendances saisonnières.
+    <h2>Carte de chaleur des hotspots criminels</h2>
+    <div class="heatmap-description">
+      Cette visualisation montre la distribution géographique des crimes selon l'heure de la journée 
+      et permet d'identifier les tendances saisonnières.
+    </div>
+    <div class="heatmap-filters">
+      <div class="filter-group">
+        <label for="time-filter">Période du jour:</label>
+        <select id="time-filter">
+          <option value="all">Toutes les périodes</option>
+          <option value="jour">Matin (6h-12h)</option>
+          <option value="apres-midi">Après-midi (12h-18h)</option>
+          <option value="soir">Soir (18h-0h)</option>
+          <option value="nuit">Nuit (0h-6h)</option>
+        </select>
       </div>
-      <div class="heatmap-filters">
-        <div class="filter-group">
-          <label for="time-filter">Période du jour:</label>
-          <select id="time-filter">
-            <option value="all">Toutes les périodes</option>
-            <option value="jour">Matin (6h-12h)</option>
-            <option value="apres-midi">Après-midi (12h-18h)</option>
-            <option value="soir">Soir (18h-0h)</option>
-            <option value="nuit">Nuit (0h-6h)</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="year-filter-heatmap">Année:</label>
-          <select id="year-filter-heatmap"></select>
-        </div>
-        <div class="filter-group">
-          <label for="month-filter">Mois:</label>
-          <select id="month-filter">
-            <option value="all">Tous les mois</option>
-            <option value="1">Janvier</option>
-            <option value="2">Février</option>
-            <option value="3">Mars</option>
-            <option value="4">Avril</option>
-            <option value="5">Mai</option>
-            <option value="6">Juin</option>
-            <option value="7">Juillet</option>
-            <option value="8">Août</option>
-            <option value="9">Septembre</option>
-            <option value="10">Octobre</option>
-            <option value="11">Novembre</option>
-            <option value="12">Décembre</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="crime-type-filter">Type de crime:</label>
-          <select id="crime-type-filter">
-            <option value="all">Tous les types</option>
-          </select>
-        </div>
-        <button id="apply-heatmap-filters" class="apply-button">Appliquer</button>
+      <div class="filter-group">
+        <label for="year-filter-heatmap">Année:</label>
+        <select id="year-filter-heatmap"></select>
       </div>
-      <div id="heatmap-map" class="heatmap-map"></div>
-      <div class="heatmap-legend"></div>
-    `
+      <div class="filter-group">
+        <label for="month-filter">Mois:</label>
+        <select id="month-filter">
+          <option value="all">Tous les mois</option>
+          <option value="1">Janvier</option>
+          <option value="2">Février</option>
+          <option value="3">Mars</option>
+          <option value="4">Avril</option>
+          <option value="5">Mai</option>
+          <option value="6">Juin</option>
+          <option value="7">Juillet</option>
+          <option value="8">Août</option>
+          <option value="9">Septembre</option>
+          <option value="10">Octobre</option>
+          <option value="11">Novembre</option>
+          <option value="12">Décembre</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="crime-type-filter">Type de crime:</label>
+        <select id="crime-type-filter">
+          <option value="all">Tous les types</option>
+        </select>
+      </div>
+      <button id="apply-heatmap-filters" class="apply-button">Appliquer</button>
+    </div>
+    <div id="heatmap-map" class="heatmap-map"></div>
+    <div class="heatmap-legend"></div>
+  `
 
   container.appendChild(heatmapDiv)
 
   // Ajouter les styles pour la carte de chaleur et Leaflet
   addHeatmapStyles()
+
   // Extraire les années uniques des données
   const years = [...new Set(crimeData
     .map(d => d.DATE ? new Date(d.DATE).getFullYear() : null)
-    .filter(y => y !== null && y >= 2015))].sort()
+    .filter(y => y !== null))].sort()
 
   // Extraire les catégories uniques de crimes
   const crimeTypes = [...new Set(crimeData.map(d => d.CATEGORIE).filter(c => c))]
+
   // Remplir le sélecteur d'années
   const yearSelect = document.getElementById('year-filter-heatmap')
 
@@ -171,16 +174,16 @@ function initializeLeafletMap (crimeData) {
 
             // Popup avec plus de détails
             const popupContent = `
-                            <div style="min-width: 200px;">
-                                <h3 style="margin: 0 0 8px 0; color: #4285F4; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-                                    PDQ ${pdqId}
-                                </h3>
-                                <p style="margin: 5px 0; font-weight: bold;">${pdqName}</p>
-                                <div class="pdq-crime-stats" id="pdq-stats-${pdqId}">
-                                    <p style="margin: 5px 0;">Chargement des statistiques...</p>
-                                </div>
-                            </div>
-                        `
+                          <div style="min-width: 200px;">
+                              <h3 style="margin: 0 0 8px 0; color: #4285F4; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                                  PDQ ${pdqId}
+                              </h3>
+                              <p style="margin: 5px 0; font-weight: bold;">${pdqName}</p>
+                              <div class="pdq-crime-stats" id="pdq-stats-${pdqId}">
+                                  <p style="margin: 5px 0;">Chargement des statistiques...</p>
+                              </div>
+                          </div>
+                      `
 
             layer.bindPopup(popupContent)
 
@@ -248,43 +251,43 @@ function updatePDQPopupStats (pdqId) {
 
   // Mettre à jour le contenu avec les statistiques
   statsElement.innerHTML = `
-      <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 10px;">
-          <p style="margin: 5px 0; font-weight: bold;">Statistiques des crimes:</p>
-          <p style="margin: 5px 0;">Nombre total: <strong>${crimeCount}</strong></p>
-          
-          <div style="margin-top: 10px;">
-              <h4 style="margin: 5px 0; font-size: 14px;">Répartition par période:</h4>
-              
-              <div style="margin-top: 8px;">
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                      <span style="font-size: 12px;">Jour</span>
-                      <span style="font-size: 12px;">${quartStats.jour} (${jourPercent}%)</span>
-                  </div>
-                  ${jourBar}
-              </div>
-              
-              <div style="margin-top: 8px;">
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                      <span style="font-size: 12px;">Soir</span>
-                      <span style="font-size: 12px;">${quartStats.soir} (${soirPercent}%)</span>
-                  </div>
-                  ${soirBar}
-              </div>
-              
-              <div style="margin-top: 8px;">
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                      <span style="font-size: 12px;">Nuit</span>
-                      <span style="font-size: 12px;">${quartStats.nuit} (${nuitPercent}%)</span>
-                  </div>
-                  ${nuitBar}
-              </div>
-          </div>
-          
-          <div style="margin-top: 8px; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 5px;">
-              Filtres: ${timeText} | ${yearText} | ${monthText} | ${crimeTypeText}
-          </div>
-      </div>
-  `
+    <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 10px;">
+        <p style="margin: 5px 0; font-weight: bold;">Statistiques des crimes:</p>
+        <p style="margin: 5px 0;">Nombre total: <strong>${crimeCount}</strong></p>
+        
+        <div style="margin-top: 10px;">
+            <h4 style="margin: 5px 0; font-size: 14px;">Répartition par période:</h4>
+            
+            <div style="margin-top: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                    <span style="font-size: 12px;">Jour</span>
+                    <span style="font-size: 12px;">${quartStats.jour} (${jourPercent}%)</span>
+                </div>
+                ${jourBar}
+            </div>
+            
+            <div style="margin-top: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                    <span style="font-size: 12px;">Soir</span>
+                    <span style="font-size: 12px;">${quartStats.soir} (${soirPercent}%)</span>
+                </div>
+                ${soirBar}
+            </div>
+            
+            <div style="margin-top: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                    <span style="font-size: 12px;">Nuit</span>
+                    <span style="font-size: 12px;">${quartStats.nuit} (${nuitPercent}%)</span>
+                </div>
+                ${nuitBar}
+            </div>
+        </div>
+        
+        <div style="margin-top: 8px; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 5px;">
+            Filtres: ${timeText} | ${yearText} | ${monthText} | ${crimeTypeText}
+        </div>
+    </div>
+`
 }
 
 /**
@@ -303,136 +306,136 @@ function addHeatmapStyles () {
   const style = document.createElement('style')
   style.id = 'heatmap-styles'
   style.textContent = `
-      .heatmap-container {
-        margin-top: 40px;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-      
-      .heatmap-container h2 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        text-align: center;
-        font-size: 24px;
-        color: #333;
-      }
-      
-      .heatmap-description {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #666;
-        font-size: 16px;
-      }
-      
-      .heatmap-filters {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 20px;
-      }
-      
-      .heatmap-filters .filter-group {
-        display: flex;
-        flex-direction: column;
-      }
-      
-      .heatmap-filters label {
-        margin-bottom: 5px;
-        font-weight: bold;
-        font-size: 14px;
-      }
-      
-      .heatmap-filters select {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        min-width: 150px;
-      }
-      
-      .heatmap-filters .apply-button {
-        background-color: #4285F4;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 8px 16px;
-        font-size: 14px;
-        cursor: pointer;
-        align-self: center;
-        margin-top: 4px;
-      }
-      
-      .heatmap-filters .apply-button:hover {
-        background-color: #3367D6;
-        color: blue;
-      }
-      
-      .heatmap-map {
-        width: 100%;
-        height: 500px;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      }
-      
-      .heatmap-legend {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-      }
-      
-      .heatmap-legend-content {
-        background: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-        text-align: center;
-      }
-      
-      .heatmap-legend-content h4 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-      }
-      
-      .gradient-bar {
-        height: 10px;
-        width: 200px;
-        background: linear-gradient(to right, blue, cyan, lime, yellow, red);
-        border-radius: 2px;
-        margin: 0 auto;
-      }
-      
-      .gradient-labels {
-        display: flex;
-        justify-content: space-between;
-        width: 200px;
-        margin: 5px auto;
-        font-size: 12px;
-        color: #666;
-      }
-      
-      .legend-note {
-        font-size: 12px;
-        color: #666;
-        margin-top: 5px;
-      }
-      
-      .leaflet-subtitle {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        padding: 5px 10px;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 4px;
-        z-index: 1000;
-        font-size: 12px;
-        box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-      }
-    `
+    .heatmap-container {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .heatmap-container h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 24px;
+      color: #333;
+    }
+    
+    .heatmap-description {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #666;
+      font-size: 16px;
+    }
+    
+    .heatmap-filters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .heatmap-filters .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .heatmap-filters label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .heatmap-filters select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 150px;
+    }
+    
+    .heatmap-filters .apply-button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      align-self: center;
+      margin-top: 4px;
+    }
+    
+    .heatmap-filters .apply-button:hover {
+      background-color: #3367D6;
+      color: blue;
+    }
+    
+    .heatmap-map {
+      width: 100%;
+      height: 500px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .heatmap-legend {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    
+    .heatmap-legend-content {
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    
+    .heatmap-legend-content h4 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+    
+    .gradient-bar {
+      height: 10px;
+      width: 200px;
+      background: linear-gradient(to right, blue, cyan, lime, yellow, red);
+      border-radius: 2px;
+      margin: 0 auto;
+    }
+    
+    .gradient-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 200px;
+      margin: 5px auto;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .legend-note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    .leaflet-subtitle {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 5px 10px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 4px;
+      z-index: 1000;
+      font-size: 12px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    }
+  `
   document.head.appendChild(style)
 }
 
@@ -582,7 +585,7 @@ function generateHeatmapData (filteredData) {
   filteredData.forEach(crime => {
     // Si le crime a des coordonnées directes, les utiliser
     if (crime.LONGITUDE && crime.LATITUDE &&
-            !isNaN(crime.LONGITUDE) && !isNaN(crime.LATITUDE)) {
+          !isNaN(crime.LONGITUDE) && !isNaN(crime.LATITUDE)) {
       heatData.push([crime.LATITUDE, crime.LONGITUDE, 1.0])
     }
   })
@@ -691,20 +694,20 @@ function updateHeatmapLegend () {
   const legend = document.createElement('div')
   legend.className = 'heatmap-legend-content'
   legend.innerHTML = `
-            <h4>Densité de crimes</h4>
-            <div class="legend-gradient">
-                <div class="gradient-bar"></div>
-                <div class="gradient-labels">
-                    <span>Faible</span>
-                    <span>Moyenne</span>
-                    <span>Élevée</span>
-                </div>
-            </div>
-            <div class="legend-note">
-                <small>La densité des couleurs indique la concentration des crimes.<br>
-                Cliquez sur un PDQ pour voir ses statistiques détaillées.</small>
-            </div>
-        `
+          <h4>Densité de crimes</h4>
+          <div class="legend-gradient">
+              <div class="gradient-bar"></div>
+              <div class="gradient-labels">
+                  <span>Faible</span>
+                  <span>Moyenne</span>
+                  <span>Élevée</span>
+              </div>
+          </div>
+          <div class="legend-note">
+              <small>La densité des couleurs indique la concentration des crimes.<br>
+              Cliquez sur un PDQ pour voir ses statistiques détaillées.</small>
+          </div>
+      `
 
   legendContainer.appendChild(legend)
 }
